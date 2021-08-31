@@ -1,0 +1,176 @@
+@media (max-width: 1240px) {
+
+.projects {
+    .project {
+        .project-info {
+            h4 {
+                font-size: 1.3em;
+            }
+
+            p {
+                font-size: 0.9em;;
+            }
+        }
+    }
+}
+
+}
+
+@media (max-width: 1024px) {
+
+.projects {
+    width: 90%;
+    margin: auto;
+    padding-bottom: 90px;
+
+    h1 {
+        width: 90%;
+        font-size: 2em;
+        margin: 2em auto;
+    }
+
+    .projects-center {
+        position: relative;
+        columns: 3;
+        column-gap: 15px;
+
+        .project {
+            height: 100%;
+            width: 100%;
+        }
+        
+        img {
+            width: 100%;
+            height: 100%;
+            vertical-align: top;
+        }
+    }
+
+    .project {
+
+        .project-info {
+            display: none;
+        }
+
+        &:hover {
+
+            .project-img {
+                opacity: 1;
+                transition: 0.3s ease;
+            }
+        }
+    }
+}
+
+}
+
+@media (max-width: 1024px) {
+
+nav {
+    width: 90%;
+
+    .nav-menu {
+        ul {
+            li {
+                a {
+                    font-size: 1em;
+                }
+            }
+        }
+    }
+}
+
+}
+
+@media (max-width: 777px) {
+
+.projects {
+    width: 90%;
+    margin: auto;
+    padding-bottom: 1em;
+
+    .projects-center {
+        position: relative;
+        columns: 2;
+        column-gap: 15px;
+    
+        .project {
+            height: 100%;
+            width: 100%;
+        }
+        
+        img {
+            width: 100%;
+            height: 100%;
+            vertical-align: top;
+        }
+    }
+
+    h1 {
+        width: 90%;
+        font-size: 1.7em;
+        margin: 2em auto;
+    }
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    background: #ffffff;
+    top: 0;
+    z-index: 1;
+    
+    .social-header {
+
+        ul {
+
+            li {
+                display: none;
+            }
+
+            .header-icon-mobile {
+                display: block;
+
+                img {
+                    height: 100%;
+
+                    &:hover {
+                        transition: none;
+                        transform: translateY(0px);
+                    }
+                }
+            }
+        }
+    }
+
+    .nav-menu {
+        
+        ul {
+
+            li {
+                display: none;
+            }
+
+            .header-icon-mobile {
+                display: block;
+
+                a {
+                    &:hover {
+                        &:before {
+                            visibility: hidden;
+                            transform: scaleX(1);
+                        }
+                    }
+                }
+
+                img {
+                    height: 150%;
+                }
+            }
+        }
+    }
+}
+
+}

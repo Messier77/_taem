@@ -1,0 +1,112 @@
+.projects {
+
+    .back-to-work {
+        display: flex;
+        width: 150px;
+        text-decoration: none;
+        color: #000000;
+        margin-top: 60px;
+        margin-bottom: -30px;
+
+        img {
+            filter: invert(1);
+            transform: rotateY(180deg);
+            margin-right: 12px;
+        }
+    }
+
+    .detail-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .project-image {
+        width: 75%;
+        min-width: 860px;
+        margin: auto;
+        margin-bottom: 50px;
+
+        &:nth-child(1) {
+            width: 100%;
+        }
+    }
+
+    .product-description {
+        width: 860px;
+        margin: auto;
+        margin-bottom: 50px;
+
+        h5 {
+            font-size: 1.5em;
+        }
+
+        p {
+            font-size: 1.1em;
+            font-family: 'Montserrat', sans-serif;
+            margin: 15px 0px;
+            line-height: 1.5em;
+        }
+    }
+
+    .video {
+        width: 860px;
+        height: 484px;
+        margin: auto;
+    }
+
+    .back-to-work-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 50px;
+
+        .back-to-work-under {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            width: 150px;
+            text-decoration: none;
+            color: #000000;
+    
+            img {
+                filter: invert(1);
+                transform: rotateY(180deg);
+                margin-right: 12px;
+            }
+        }
+
+        .share {
+            display: flex;
+            justify-content: right;
+            align-items: center;
+
+            p {
+                font-size: 1em;
+                font-weight: 700;
+            }
+
+            a {
+                margin-left: 37px;
+            }
+        }
+    }
+}
+
+@media (max-width: 1042px) {
+
+.projects {
+    .project-image {
+        width: 100%;
+        min-width: 0;
+    }
+    
+    .product-description {
+        width: 100%;
+    }
+
+    .video {
+        width: 100%;
+    }
+}
+
+}

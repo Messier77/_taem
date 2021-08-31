@@ -1,0 +1,25 @@
+.container {
+  width: 1200px;
+  margin: 20px auto;
+  -webkit-columns: 4;
+          columns: 4;
+  -webkit-column-gap: 40px;
+          column-gap: 40px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.container .box {
+  width: 100%;
+  margin-bottom: 30px;
+  background: blueviolet;
+  overflow: hidden;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.container .box img {
+  max-width: 100%;
+  vertical-align: top;
+}
+/*# sourceMappingURL=styles.css.map */
