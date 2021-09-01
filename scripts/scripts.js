@@ -31,8 +31,16 @@ let myApp = {
     categories: []
   },
   init: function(products, categories, materials) {
+
+    products = products.map(product => {
+      product.product_categories = product.product_categories.split(',');
+      return product;
+    });
     myApp.productListFull = products;
     myApp.productList = products;
+
+
+
 
     myApp.setFilters(products, categories, materials);
 
@@ -184,10 +192,10 @@ let myApp = {
   printMaterials: function() {
       let res = "";
       myApp.filters.materials.forEach(element => {
-        let id = element.material_id;  
+        let id = element.id;  
         let item = `
-                <input data-material="${id}" type="checkbox" id="material${id}" name="materials${id}" value="${element.material_name}" rel="${element.material_name}">
-                <label for="material${id}" onclick="myApp.toggleMaterial(${id})" class="material label ${myApp.activeFilters.materials.includes(parseInt(element.material_id)) ? 'checked' : ''}">${element.material_name}</label>
+                <input data-material="${id}" type="checkbox" id="material${id}" name="materials${id}" value="${element.name}" rel="${element.name}">
+                <label for="material${id}" onclick="myApp.toggleMaterial(${id})" class="material label ${myApp.activeFilters.materials.includes(element.id) ? 'checked' : ''}">${element.name}</label>
               `;
       res += item;
       });
@@ -198,10 +206,12 @@ let myApp = {
   printCategories: function() {
       let res = "";
       myApp.filters.categories.forEach(element => {
-          let id = element.category_id;  
+
+
+          let id = element.id;  
           let item = `
-                <input data-category="${id}" type="checkbox" id="category${id}" name="categories" value="${element.category_name}" rel="${element.category_name}">
-                <label for="category${id}" onclick="myApp.toggleCategory(${id})" class="category label ${myApp.activeFilters.categories.includes(parseInt(element.category_id)) ? 'checked' : ''}">${element.category_name}</label>
+                <input data-category="${id}" type="checkbox" id="category${id}" name="categories" value="${element.name}" rel="${element.name}">
+                <label for="category${id}" onclick="myApp.toggleCategory(${id})" class="category label ${myApp.activeFilters.categories.includes(element.id) ? 'checked' : ''}">${element.name}</label>
               `;
       res += item;
       });
@@ -211,8 +221,6 @@ let myApp = {
   },
   toggleMaterial: function(materialId) {
 
-
-    debugger;
 
     if (myApp.activeFilters.materials.includes(materialId)) {
       myApp.activeFilters.materials = myApp.activeFilters.materials.filter((id) => id !== materialId);
