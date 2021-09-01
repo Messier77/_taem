@@ -53,16 +53,16 @@ let myApp = {
   },
   setFilters: function(products, categories, materials) {
 
-    let allCategoriesFromProducts = products.map(product => product.product_category);
-    let allMaterialsFromProducts = products.map(product => product.product_material);
+    let allCategoriesFromProducts = products.map(product => product.product_categories).join().split(',');
+    let allMaterialsFromProducts = products.map(product => product.material_id);
 
     myApp.filters.categories = categories.filter((category) => {
-      if (allCategoriesFromProducts.includes(category.category_tag)) {
+      if (allCategoriesFromProducts.includes(category.id)) {
         return category;
       }
     });
     myApp.filters.materials = materials.filter((material) => {
-      if (allMaterialsFromProducts.includes(material.material_tag)) {
+      if (allMaterialsFromProducts.includes(material.id)) {
         return material;
       }
     });
@@ -71,16 +71,15 @@ let myApp = {
   filterByMaterial: function() {
     let newProducts = myApp.productList;
 
-    const activeMaterialNames = myApp.filters.materials.filter((mat) => {
+    const activeMaterialIds = myApp.filters.materials.filter((mat) => {
 
-      const id = parseInt(mat.material_id);
-      if (myApp.activeFilters.materials.includes(id)) {
+      if (myApp.activeFilters.materials.includes(parseInt(mat.id))) {
         return mat;
       }
-    }).map(mat => mat.material_tag);
+    }).map(mat => mat.id);
 
     newProducts = newProducts.filter((prod) => {
-      if (activeMaterialNames.includes(prod.product_material)) {
+      if (activeMaterialIds.includes(prod.material_id)) {
         return prod;
       }
 
@@ -172,12 +171,12 @@ let myApp = {
       let res = "";
       myApp.productList.forEach(element => {
           let item = `
-              <a href="../project/project.php?product=${element.product_id}" class="all-projects">
+              <a href="../project/project.php?product=${element.id}" class="all-projects">
               <div class="project">
-                  <img src="../images/products/${element.product_id}/${element.product_featured_photo}" alt="" class="project-img" />
+                  <img src="../images/products/${element.id}/${element.featured_image}" alt="" class="project-img" />
                   <div class="project-info">
-                      <h4>${element.product_name}</h4>
-                      <p>${element.product_short_description}</p>
+                      <h4>${element.name}</h4>
+                      <p>${element.short_description}</p>
                       <img src="../images/icons/arrow.svg" alt="">
                   </div>
               </div>
@@ -192,10 +191,10 @@ let myApp = {
   printMaterials: function() {
       let res = "";
       myApp.filters.materials.forEach(element => {
-        let id = element.id;  
+        let id = element.id;
         let item = `
                 <input data-material="${id}" type="checkbox" id="material${id}" name="materials${id}" value="${element.name}" rel="${element.name}">
-                <label for="material${id}" onclick="myApp.toggleMaterial(${id})" class="material label ${myApp.activeFilters.materials.includes(element.id) ? 'checked' : ''}">${element.name}</label>
+                <label for="material${id}" onclick="myApp.toggleMaterial(${id})" class="material label ${myApp.activeFilters.materials.includes(parseInt(element.id)) ? 'checked' : ''}">${element.name}</label>
               `;
       res += item;
       });
