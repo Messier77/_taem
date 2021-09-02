@@ -36,9 +36,7 @@ function get_connection() {
 function get_products() {
     $connection = get_connection();
 
-    $query = "select p.* from ( SELECT GROUP_CONCAT(t.id SEPARATOR ',') AS product_categories, 
-    p.id,p.title,p.name, p.description, p.short_description, p.material_id, p.featured_image FROM products AS p LEFT JOIN product_category AS ta ON ta.product_id=p.id JOIN categories AS t ON ta.category_id=t.id GROUP BY p.id) p inner join product_category t2a on t2a.product_id = p.id inner join categories t on t.id = t2a.category_id GROUP BY p.id ";
-    // $select_all_products_query = mysqli_query($connection, $query);
+    $query = "select * FROM products WHERE is_featured = 1";
     $select_all_products_query = $connection->query($query);
     
     // $myArray = mysqli_fetch_all($select_all_products_query, MYSQLI_ASSOC);

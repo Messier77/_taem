@@ -4,20 +4,19 @@ const links = nav.querySelectorAll("a");
 const burgerClose = document.getElementById("burger-close");
 
 burger.addEventListener("click", () => {
-    nav.classList.toggle("inactive-menu");
-    // burger.style.display = "none";
-    // burgerClose.style.display = "block";
+  nav.classList.toggle("inactive-menu");
+  // burger.style.display = "none";
+  // burgerClose.style.display = "block";
 });
 
 links.forEach(link => {
-    link.addEventListener('click', () => {
-        nav.classList.toggle("inactive-menu");
-        // burger.style.display = "block";
-        // burgerClose.style.display = "none";
-        // burgerImg.src = "./images/icons/burger-menu.svg";
-    })
+  link.addEventListener('click', () => {
+    nav.classList.toggle("inactive-menu");
+    // burger.style.display = "block";
+    // burgerClose.style.display = "none";
+    // burgerImg.src = "./images/icons/burger-menu.svg";
+  })
 });
-
 
 let myApp = {
   productListFull: [],
@@ -30,31 +29,27 @@ let myApp = {
     materials: [],
     categories: []
   },
-  init: function(products, categories, materials) {
+  init: function (products, categories, materials) {
 
     products = products.map(product => {
       product.product_categories = product.product_categories.split(',');
+      product.product_materials = product.product_materials.split(',');
       return product;
     });
     myApp.productListFull = products;
     myApp.productList = products;
 
-
-
-
     myApp.setFilters(products, categories, materials);
-
-    console.log(myApp);
 
     myApp.printProducts();
     myApp.printMaterials();
     myApp.printCategories();
     myApp.printResultsNr();
   },
-  setFilters: function(products, categories, materials) {
+  setFilters: function (products, categories, materials) {
 
     let allCategoriesFromProducts = products.map(product => product.product_categories).join().split(',');
-    let allMaterialsFromProducts = products.map(product => product.material_id);
+    let allMaterialsFromProducts = products.map(product => product.product_materials).join().split(',');
 
     myApp.filters.categories = categories.filter((category) => {
       if (allCategoriesFromProducts.includes(category.id)) {
@@ -68,18 +63,25 @@ let myApp = {
     });
   },
 
-  filterByMaterial: function() {
+  filterByMaterial: function () {
     let newProducts = myApp.productList;
 
     const activeMaterialIds = myApp.filters.materials.filter((mat) => {
-
-      if (myApp.activeFilters.materials.includes(parseInt(mat.id))) {
+      const id = parseInt(mat.id);
+      if (myApp.activeFilters.materials.includes(id)) {
         return mat;
       }
     }).map(mat => mat.id);
 
     newProducts = newProducts.filter((prod) => {
-      if (activeMaterialIds.includes(prod.material_id)) {
+      let hasMaterial = false;
+
+      prod.product_materials.forEach((material) => {
+        if (activeMaterialIds.includes(material)) {
+          hasMaterial = true;
+        }
+      });
+      if (hasMaterial) {
         return prod;
       }
 
@@ -87,11 +89,8 @@ let myApp = {
 
     return newProducts;
   },
-  filterByCategory: function() {
+  filterByCategory: function () {
     let newProducts = myApp.productList;
-
-    debugger;
-
     const activeCategoryIds = myApp.filters.categories.filter((cat) => {
 
       const id = parseInt(cat.id);
@@ -116,7 +115,7 @@ let myApp = {
 
     return newProducts;
   },
-  updateProductList: function() {
+  updateProductList: function () {
 
     myApp.productList = myApp.productListFull;
 
@@ -135,7 +134,7 @@ let myApp = {
     myApp.printResultsNr();
   },
 
-  printAddedFilters: function() {
+  printAddedFilters: function () {
     let res = "";
 
     myApp.filters.materials.forEach(material => {
@@ -166,10 +165,8 @@ let myApp = {
 
     document.querySelector("#added-filters").innerHTML = "";
     document.querySelector("#added-filters").innerHTML = res;
-
-
   },
-  printResultsNr: function() {
+  printResultsNr: function () {
 
     let res = `${myApp.productList.length} Results`;
     if (myApp.productList.length === 1) {
@@ -177,13 +174,13 @@ let myApp = {
     }
     document.querySelector("#results").innerHTML = res;
   },
-  printProducts: function() {
-      let res = "";
-      myApp.productList.forEach(element => {
-          let item = `
+  printProducts: function () {
+    let res = "";
+    myApp.productList.forEach(element => {
+      let item = `
               <a href="../project/project.php?product=${element.id}" class="all-projects">
               <div class="project">
-                  <img src="../images/products/${element.id}/${element.featured_image}" alt="" class="project-img" />
+                  <img src="../images/products/${element.featured_image}" alt="" class="project-img" />
                   <div class="project-info">
                       <h4>${element.name}</h4>
                       <p>${element.short_description}</p>
@@ -193,43 +190,41 @@ let myApp = {
               </a>
               `;
       res += item;
-      });
+    });
 
-      document.querySelector("#project-center-new").innerHTML = "";
-      document.querySelector("#project-center-new").innerHTML = res;
+    document.querySelector("#project-center-new").innerHTML = "";
+    document.querySelector("#project-center-new").innerHTML = res;
   },
-  printMaterials: function() {
-      let res = "";
-      myApp.filters.materials.forEach(element => {
-        let id = element.id;
-        let item = `
+  printMaterials: function () {
+    let res = "";
+    myApp.filters.materials.forEach(element => {
+      let id = parseInt(element.id);
+      let item = `
                 <input data-material="${id}" type="checkbox" id="material${id}" name="materials${id}" value="${element.name}" rel="${element.name}">
-                <label for="material${id}" onclick="myApp.toggleMaterial(${id})" class="material label ${myApp.activeFilters.materials.includes(parseInt(element.id)) ? 'checked' : ''}">${element.name}</label>
+                <label for="material${id}" onclick="myApp.toggleMaterial(${id})" class="material label ${myApp.activeFilters.materials.includes(id) ? 'checked' : ''}">${element.name}</label>
               `;
       res += item;
-      });
+    });
 
-      document.querySelector("#materials").innerHTML = "";
-      document.querySelector("#materials").innerHTML = res;
+    document.querySelector("#materials").innerHTML = "";
+    document.querySelector("#materials").innerHTML = res;
   },
-  printCategories: function() {
-      let res = "";
-      myApp.filters.categories.forEach(element => {
+  printCategories: function () {
+    let res = "";
+    myApp.filters.categories.forEach(element => {
 
-
-          let id = parseInt(element.id);  
-          let item = `
+      let id = parseInt(element.id);
+      let item = `
                 <input data-category="${id}" type="checkbox" id="category${id}" name="categories" value="${element.name}" rel="${element.name}">
                 <label for="category${id}" onclick="myApp.toggleCategory(${id})" class="category label ${myApp.activeFilters.categories.includes(id) ? 'checked' : ''}">${element.name}</label>
               `;
       res += item;
-      });
+    });
 
-      document.querySelector("#categories").innerHTML = "";
-      document.querySelector("#categories").innerHTML = res;
+    document.querySelector("#categories").innerHTML = "";
+    document.querySelector("#categories").innerHTML = res;
   },
-  toggleMaterial: function(materialId) {
-
+  toggleMaterial: function (materialId) {
 
     if (myApp.activeFilters.materials.includes(materialId)) {
       myApp.activeFilters.materials = myApp.activeFilters.materials.filter((id) => id !== materialId);
@@ -240,9 +235,7 @@ let myApp = {
     myApp.updateProductList();
 
   },
-  toggleCategory: function(categoryId) {
-
-    debugger;
+  toggleCategory: function (categoryId) {
 
     if (myApp.activeFilters.categories.includes(categoryId)) {
       myApp.activeFilters.categories = myApp.activeFilters.categories.filter((id) => id !== categoryId);

@@ -70,7 +70,7 @@
             $fileExtension = strtolower(end($fileNameCmps));
 
             // sanitize file-name
-            $newFileName = md5(time() . $fileName) . '-' . $fileName . '.' . $fileExtension;
+            $newFileName = md5(time() . $fileName) . '-' . $fileNameCmps[0] . '.' . $fileExtension;
 
             // check if file has one of the following extensions
             $allowedfileExtensions = array('jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
