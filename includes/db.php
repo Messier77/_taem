@@ -16,6 +16,12 @@ if ($connection) {
     // echo "Connected";
 }
 
+function pr($param) {
+    echo "<pre>";
+        print_r($param);
+    echo "</pre>";
+}
+
 function get_connection() {
     $db['db_host'] = "localhost";
     $db['db_user'] = "root";
@@ -30,32 +36,31 @@ function get_connection() {
 function get_products() {
     $connection = get_connection();
 
-    $query = "select product.*, material.name as material_name, category.name as category_name from products as product inner join materials as material on material.id = product.id inner join categories as category on category.id = product.id";
+    $query = "select p.* from ( SELECT GROUP_CONCAT(t.id SEPARATOR ',') AS product_categories, 
+    p.id,p.title,p.name, p.description, p.short_description, p.material_id, p.featured_image FROM products AS p LEFT JOIN product_category AS ta ON ta.product_id=p.id JOIN categories AS t ON ta.category_id=t.id GROUP BY p.id) p inner join product_category t2a on t2a.product_id = p.id inner join categories t on t.id = t2a.category_id GROUP BY p.id ";
     // $select_all_products_query = mysqli_query($connection, $query);
     $select_all_products_query = $connection->query($query);
     
-        // $myArray = mysqli_fetch_all($select_all_products_query, MYSQLI_ASSOC);
-        $myArray = $select_all_products_query->fetch_all(MYSQLI_ASSOC);
-        $results = json_encode($myArray);
+    // $myArray = mysqli_fetch_all($select_all_products_query, MYSQLI_ASSOC);
+    $myArray = $select_all_products_query->fetch_all(MYSQLI_ASSOC);
+    $results = json_encode($myArray);
     var_dump($results);
     $connection->close();
     return $results;    
 }
 
-function insert_product($name, $title, $description, $short_description, $category_id, $material_id, $featured_image, $is_featured) {
+function insert_product($name, $title, $description, $short_description, $product_categories, $product_materials, $featured_image = '', $is_featured = 0) {
     $connection = get_connection();
 
-    $query = "INSERT INTO `products` (`id`, `name`, `title`, `description`, `short_description`, `active`, `category_id`, `material_id`, `featured_image`, `is_featured`) VALUES (NULL, $name, $title, $description, $short_description, 1, $category_id, $material_id, $featured_image, $is_featured);";
-    // $select_all_products_query = mysqli_query($connection, $query);
-    // $connection->query($query);
-    mysqli_query($connection, $query);
-    
-        // $myArray = mysqli_fetch_all($select_all_products_query, MYSQLI_ASSOC);
-        // $myArray = $select_all_products_query->fetch_all(MYSQLI_ASSOC);
-        // $results = json_encode($myArray);
-    // var_dump($results);
+    $query = "INSERT INTO products (name, title, description, short_description, active, featured_image, product_categories, product_materials) 
+    VALUES ('$name', '$title', '$description', '$short_description', 1, '$featured_image', '$product_categories', '$product_materials')";
+
+    if ($connection->query($query) === TRUE) {
+        pr("New record created successfully");
+      } else {
+       pr("Error: " . $connection->error);
+      }
     $connection->close();
-    // return $results;    
 }
 
 function get_materials() {

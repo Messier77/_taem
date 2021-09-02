@@ -31,8 +31,16 @@ let myApp = {
     categories: []
   },
   init: function(products, categories, materials) {
+
+    products = products.map(product => {
+      product.product_categories = product.product_categories.split(',');
+      return product;
+    });
     myApp.productListFull = products;
     myApp.productList = products;
+
+
+
 
     myApp.setFilters(products, categories, materials);
 
@@ -45,16 +53,16 @@ let myApp = {
   },
   setFilters: function(products, categories, materials) {
 
-    let allCategoriesFromProducts = products.map(product => product.product_category);
-    let allMaterialsFromProducts = products.map(product => product.product_material);
+    let allCategoriesFromProducts = products.map(product => product.product_categories).join().split(',');
+    let allMaterialsFromProducts = products.map(product => product.material_id);
 
     myApp.filters.categories = categories.filter((category) => {
-      if (allCategoriesFromProducts.includes(category.category_tag)) {
+      if (allCategoriesFromProducts.includes(category.id)) {
         return category;
       }
     });
     myApp.filters.materials = materials.filter((material) => {
-      if (allMaterialsFromProducts.includes(material.material_tag)) {
+      if (allMaterialsFromProducts.includes(material.id)) {
         return material;
       }
     });
@@ -63,16 +71,15 @@ let myApp = {
   filterByMaterial: function() {
     let newProducts = myApp.productList;
 
-    const activeMaterialNames = myApp.filters.materials.filter((mat) => {
+    const activeMaterialIds = myApp.filters.materials.filter((mat) => {
 
-      const id = parseInt(mat.material_id);
-      if (myApp.activeFilters.materials.includes(id)) {
+      if (myApp.activeFilters.materials.includes(parseInt(mat.id))) {
         return mat;
       }
-    }).map(mat => mat.material_tag);
+    }).map(mat => mat.id);
 
     newProducts = newProducts.filter((prod) => {
-      if (activeMaterialNames.includes(prod.product_material)) {
+      if (activeMaterialIds.includes(prod.material_id)) {
         return prod;
       }
 
@@ -83,16 +90,26 @@ let myApp = {
   filterByCategory: function() {
     let newProducts = myApp.productList;
 
-    const activeCategoryNames = myApp.filters.categories.filter((cat) => {
+    debugger;
 
-      const id = parseInt(cat.category_id);
+    const activeCategoryIds = myApp.filters.categories.filter((cat) => {
+
+      const id = parseInt(cat.id);
       if (myApp.activeFilters.categories.includes(id)) {
         return cat;
       }
-    }).map(cat => cat.category_tag);
+    }).map(cat => cat.id);
 
     newProducts = newProducts.filter((prod) => {
-      if (activeCategoryNames.includes(prod.product_category)) {
+
+      let hasCategory = false;
+
+      prod.product_categories.forEach((category) => {
+        if (activeCategoryIds.includes(category)) {
+          hasCategory = true;
+        }
+      });
+      if (hasCategory) {
         return prod;
       }
     });
@@ -123,11 +140,11 @@ let myApp = {
 
     myApp.filters.materials.forEach(material => {
 
-      if (myApp.activeFilters.materials.includes(parseInt(material.material_id))) {
+      if (myApp.activeFilters.materials.includes(parseInt(material.id))) {
         let item = `
           <div class="added-filter">
-            <img onclick="myApp.toggleMaterial(${parseInt(material.material_id)})" src="../images/icons/close-filter.svg" alt="">
-            <p>${material.material_name}</p>
+            <img onclick="myApp.toggleMaterial(${parseInt(material.id)})" src="../images/icons/close-filter.svg" alt="">
+            <p>${material.name}</p>
           </div>
         `;
         res += item;
@@ -136,11 +153,11 @@ let myApp = {
 
     myApp.filters.categories.forEach(category => {
 
-      if (myApp.activeFilters.categories.includes(parseInt(category.category_id))) {
+      if (myApp.activeFilters.categories.includes(parseInt(category.id))) {
         let item = `
           <div class="added-filter">
-            <img onclick="myApp.toggleCategory(${parseInt(category.category_id)})" src="../images/icons/close-filter.svg" alt="">
-            <p>${category.category_name}</p>
+            <img onclick="myApp.toggleCategory(${parseInt(category.id)})" src="../images/icons/close-filter.svg" alt="">
+            <p>${category.name}</p>
           </div>
         `;
         res += item;
@@ -164,12 +181,12 @@ let myApp = {
       let res = "";
       myApp.productList.forEach(element => {
           let item = `
-              <a href="../project/project.php?product=${element.product_id}" class="all-projects">
+              <a href="../project/project.php?product=${element.id}" class="all-projects">
               <div class="project">
-                  <img src="../images/products/${element.product_id}/${element.product_featured_photo}" alt="" class="project-img" />
+                  <img src="../images/products/${element.id}/${element.featured_image}" alt="" class="project-img" />
                   <div class="project-info">
-                      <h4>${element.product_name}</h4>
-                      <p>${element.product_short_description}</p>
+                      <h4>${element.name}</h4>
+                      <p>${element.short_description}</p>
                       <img src="../images/icons/arrow.svg" alt="">
                   </div>
               </div>
@@ -184,10 +201,10 @@ let myApp = {
   printMaterials: function() {
       let res = "";
       myApp.filters.materials.forEach(element => {
-        let id = element.material_id;  
+        let id = element.id;
         let item = `
-                <input data-material="${id}" type="checkbox" id="material${id}" name="materials${id}" value="${element.material_name}" rel="${element.material_name}">
-                <label for="material${id}" onclick="myApp.toggleMaterial(${id})" class="material label ${myApp.activeFilters.materials.includes(parseInt(element.material_id)) ? 'checked' : ''}">${element.material_name}</label>
+                <input data-material="${id}" type="checkbox" id="material${id}" name="materials${id}" value="${element.name}" rel="${element.name}">
+                <label for="material${id}" onclick="myApp.toggleMaterial(${id})" class="material label ${myApp.activeFilters.materials.includes(parseInt(element.id)) ? 'checked' : ''}">${element.name}</label>
               `;
       res += item;
       });
@@ -198,10 +215,12 @@ let myApp = {
   printCategories: function() {
       let res = "";
       myApp.filters.categories.forEach(element => {
-          let id = element.category_id;  
+
+
+          let id = parseInt(element.id);  
           let item = `
-                <input data-category="${id}" type="checkbox" id="category${id}" name="categories" value="${element.category_name}" rel="${element.category_name}">
-                <label for="category${id}" onclick="myApp.toggleCategory(${id})" class="category label ${myApp.activeFilters.categories.includes(parseInt(element.category_id)) ? 'checked' : ''}">${element.category_name}</label>
+                <input data-category="${id}" type="checkbox" id="category${id}" name="categories" value="${element.name}" rel="${element.name}">
+                <label for="category${id}" onclick="myApp.toggleCategory(${id})" class="category label ${myApp.activeFilters.categories.includes(id) ? 'checked' : ''}">${element.name}</label>
               `;
       res += item;
       });
@@ -211,8 +230,6 @@ let myApp = {
   },
   toggleMaterial: function(materialId) {
 
-
-    debugger;
 
     if (myApp.activeFilters.materials.includes(materialId)) {
       myApp.activeFilters.materials = myApp.activeFilters.materials.filter((id) => id !== materialId);
@@ -224,6 +241,8 @@ let myApp = {
 
   },
   toggleCategory: function(categoryId) {
+
+    debugger;
 
     if (myApp.activeFilters.categories.includes(categoryId)) {
       myApp.activeFilters.categories = myApp.activeFilters.categories.filter((id) => id !== categoryId);
