@@ -54,7 +54,7 @@
             $is_featured = $_POST['is_featured'];
         }
 
-        $dest_path = '';
+        $newFileName = '';
         if (isset($_FILES['featured_image'])) {
             // get details of the uploaded file
             $fileTmpPath = $_FILES['featured_image']['tmp_name'];
@@ -65,7 +65,7 @@
             $fileExtension = strtolower(end($fileNameCmps));
 
             // sanitize file-name
-            $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+            $newFileName = md5(time() . $fileName) . '-' . $fileName . '.' . $fileExtension;
 
             // check if file has one of the following extensions
             $allowedfileExtensions = array('jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
@@ -86,9 +86,7 @@
             }
         }
 
-
-
-        insert_product($product_name, $product_title, $product_description, $product_short_description, $product_categories, $product_materials, $dest_path, $is_featured);
+        insert_product($product_name, $product_title, $product_description, $product_short_description, $product_categories, $product_materials, $newFileName, $is_featured);
 
     }
 ?>
