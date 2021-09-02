@@ -52,8 +52,8 @@ function get_products() {
 function insert_product($name, $title, $description, $short_description, $product_categories, $product_materials, $featured_image = '', $is_featured = 0) {
     $connection = get_connection();
 
-    $query = "INSERT INTO products (name, title, description, short_description, active, featured_image, product_categories, product_materials) 
-    VALUES ('$name', '$title', '$description', '$short_description', 1, '$featured_image', '$product_categories', '$product_materials')";
+    $query = "INSERT INTO products (name, title, description, short_description, active, featured_image, product_categories, product_materials, is_featured) 
+    VALUES ('$name', '$title', '$description', '$short_description', 1, '$featured_image', '$product_categories', '$product_materials', '$is_featured')";
 
     if ($connection->query($query) === TRUE) {
         pr("New record created successfully");

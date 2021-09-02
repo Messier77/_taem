@@ -65,14 +65,14 @@
 
             <?php 
                 
-            $query = "SELECT * FROM products WHERE product_is_featured = true";
+            $query = "SELECT * FROM products WHERE is_featured = true";
             $select_all_products_query = mysqli_query($connection, $query);
 
                 while($row = mysqli_fetch_assoc($select_all_products_query)) {
-                    $product_id = $row['product_id'];
-                    $product_name = $row['product_name'];
-                    $product_short_description = $row['product_short_description'];
-                    $product_featured_photo = $row['product_featured_photo'];
+                    $product_id = $row['id'];
+                    $product_name = $row['name'];
+                    $product_short_description = $row['short_description'];
+                    $product_featured_photo = $row['featured_image'];
             ?>
 
             <!-- Single project -->

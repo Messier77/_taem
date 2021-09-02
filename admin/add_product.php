@@ -12,20 +12,25 @@
         $select_all_materials_query = mysqli_query($connection, $query);
         $materials = mysqli_fetch_all($select_all_materials_query, MYSQLI_ASSOC);
 
+    $errors = [];
 
     if(isset($_POST['submit'])) {
         // add product to database
 
-        if(!empty($_POST['product_name'])) {
-            $product_name = $_POST['product_name'];
-            pr('You have chosen the product_name: ' . $product_name);
+        $product_name = $_POST['product_name'];
+        if(empty($product_name)) {
+            $errors['product_name'] = 'Product name cannot be empty!';
+        } elseif(strlen($product_name) > 25) {
+            $errors['product_name'] = 'Product name must be less than 25 characters!';
         }
 
-        if(!empty($_POST['product_title'])) {
-            $product_title = $_POST['product_title'];
-            pr('You have chosen the product_title: ' . $product_title);
+        $product_title = $_POST['product_title'];
+        if(empty($product_title)) {
+            $errors['product_title'] = 'Product title cannot be empty!';
+        } elseif(strlen($product_title) > 25) {
+            $errors['product_title'] = 'Product title must be less than 25 characters!';
         }
-
+        
         if(!empty($_POST['product_description'])) {
             $product_description = $_POST['product_description'];
             pr('You have chosen the product_description: ' . $product_description);
@@ -86,7 +91,9 @@
             }
         }
 
-        insert_product($product_name, $product_title, $product_description, $product_short_description, $product_categories, $product_materials, $newFileName, $is_featured);
+        if(empty($errors)) {
+            insert_product($product_name, $product_title, $product_description, $product_short_description, $product_categories, $product_materials, $newFileName, $is_featured);
+        } 
 
     }
 ?>
@@ -119,12 +126,20 @@
                             <form action="" method="post" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label for="product_name">Product name</label>
-                                    <input class="form-control" type="text" name="product_name">
+                                    <input class="form-control" type="text" name="product_name" value="<?php echo(isset($product_name) ? $product_name :''); ?>">
+
+                                    <?php if(isset($errors['product_name'])): ?>
+                                    <p class="text-danger"><?php echo($errors['product_name']); ?></p>
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="product_title">Product title</label>
-                                    <input class="form-control" type="text" name="product_title">
+                                    <input class="form-control" type="text" name="product_title" value="<?php echo(isset($product_title) ? $product_title :''); ?>">
+
+                                    <?php if(isset($errors['product_title'])): ?>
+                                    <p class="text-danger"><?php echo($errors['product_title']); ?></p>
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="form-group">
@@ -158,8 +173,8 @@
                                 <div class="form-group">
                                     <label>Featured</label>
                                     <select name="is_featured" class="form-control">
-                                            <option value="0">No</option>
-                                            <option value="1">Yes</option>
+                                        <option value="0">No</option>
+                                        <option value="1">Yes</option>
                                     </select>
                                 </div>
 

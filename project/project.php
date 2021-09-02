@@ -5,8 +5,12 @@
         $id = $_GET['product'];
         echo 'id ' . $id;
 
+        if (!is_numeric($id)) {
+            return false;
+        }
 
-        $query = "SELECT * FROM products WHERE product_id = $id";
+
+        $query = "SELECT * FROM products WHERE id = $id";
         $select_all_products_query = mysqli_query($connection, $query);
 
         $myArray = mysqli_fetch_all($select_all_products_query, MYSQLI_ASSOC);
@@ -82,7 +86,7 @@
             <p>Back to work</p>
         </a>
 
-        <h1 class="h1-work"><?php echo $product['product_name'] ?></h1>
+        <h1 class="h1-work"><?php echo $product['name'] ?></h1>
 
         <div class="detail-content">
             <img src="../images/products/broken-lamp/1-broken-lamp-facebook@2x.png" alt="" class="project-image">
