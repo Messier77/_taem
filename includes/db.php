@@ -16,6 +16,12 @@ if ($connection) {
     // echo "Connected";
 }
 
+function pr($param) {
+    echo "<pre>";
+        print_r($param);
+    echo "</pre>";
+}
+
 function get_connection() {
     $db['db_host'] = "localhost";
     $db['db_user'] = "root";
@@ -43,20 +49,18 @@ function get_products() {
     return $results;    
 }
 
-function insert_product($name, $title, $description, $short_description, $category_id, $material_id, $featured_image, $is_featured) {
+function insert_product($name, $title, $description, $short_description, $product_categories, $product_materials, $featured_image = '', $is_featured = 0) {
     $connection = get_connection();
 
-    $query = "INSERT INTO `products` (`id`, `name`, `title`, `description`, `short_description`, `active`, `category_id`, `material_id`, `featured_image`, `is_featured`) VALUES (NULL, $name, $title, $description, $short_description, 1, $category_id, $material_id, $featured_image, $is_featured);";
-    // $select_all_products_query = mysqli_query($connection, $query);
-    // $connection->query($query);
-    mysqli_query($connection, $query);
-    
-        // $myArray = mysqli_fetch_all($select_all_products_query, MYSQLI_ASSOC);
-        // $myArray = $select_all_products_query->fetch_all(MYSQLI_ASSOC);
-        // $results = json_encode($myArray);
-    // var_dump($results);
+    $query = "INSERT INTO products (name, title, description, short_description, active, featured_image, product_categories, product_materials) 
+    VALUES ('$name', '$title', '$description', '$short_description', 1, '$featured_image', '$product_categories', '$product_materials')";
+
+    if ($connection->query($query) === TRUE) {
+        pr("New record created successfully");
+      } else {
+       pr("Error: " . $connection->error);
+      }
     $connection->close();
-    // return $results;    
 }
 
 function get_materials() {

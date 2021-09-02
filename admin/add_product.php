@@ -18,38 +18,43 @@
 
         if(!empty($_POST['product_name'])) {
             $product_name = $_POST['product_name'];
-            echo 'You have chosen the product_name: ' . $product_name;
+            pr('You have chosen the product_name: ' . $product_name);
         }
 
         if(!empty($_POST['product_title'])) {
             $product_title = $_POST['product_title'];
-            echo 'You have chosen the product_title: ' . $product_title;
+            pr('You have chosen the product_title: ' . $product_title);
         }
 
         if(!empty($_POST['product_description'])) {
             $product_description = $_POST['product_description'];
-            echo 'You have chosen the product_description: ' . $product_description;
+            pr('You have chosen the product_description: ' . $product_description);
         }
 
+        $product_short_description = 'short desc';
         if(!empty($_POST['product_short_description'])) {
             $product_short_description = $_POST['product_short_description'];
-            echo 'You have chosen the product_short_description: ' . $product_short_description;
+            pr('You have chosen the product_short_description: ' . $product_short_description);
         }
 
+        $product_categories = '';
         if(!empty($_POST['category'])) {
-            $category_id = $_POST['category'];
-            echo 'You have chosen the category: ' . $category_id;
+            $product_categories = implode(',', $_POST['category']);
+            pr('You have chosen the category: ' . $product_categories);
         }
 
+        $product_materials = '';
         if(!empty($_POST['material'])) {
-            $material_id = $_POST['material'];
-            echo 'You have chosen the material: ' . $material_id;
+            $product_materials = implode(',', $_POST['material']);
+            pr('You have chosen the material: ' . $product_materials);
         }
 
+        $is_featured = 0;
         if(!empty($_POST['is_featured'])) {
             $is_featured = $_POST['is_featured'];
         }
 
+        $dest_path = '';
         if (isset($_FILES['featured_image'])) {
             // get details of the uploaded file
             $fileTmpPath = $_FILES['featured_image']['tmp_name'];
@@ -67,7 +72,7 @@
 
             if (in_array($fileExtension, $allowedfileExtensions)) {
                 // directory in which the uploaded file will be moved
-                $uploadFileDir = './images/';
+                $uploadFileDir = '../images/products/';
                 $dest_path = $uploadFileDir . $newFileName;
 
                 if(move_uploaded_file($fileTmpPath, $dest_path)) {
@@ -81,7 +86,9 @@
             }
         }
 
-        insert_product($product_name, $product_title, $product_description, $product_short_description, $category_id, $material_id, $dest_path, $is_featured);
+
+
+        insert_product($product_name, $product_title, $product_description, $product_short_description, $product_categories, $product_materials, $dest_path, $is_featured);
 
     }
 ?>
@@ -134,7 +141,7 @@
 
                                 <div class="form-group">
                                     <label>Category</label>
-                                    <select name="category" class="form-control js-example-basic-multiple">
+                                    <select name="category[]" multiple="multiple" class="form-control js-example-basic-multiple">
                                         <?php foreach($categories as $key => $category ): ?>
                                             <option value="<?php echo $category['id']; ?>"> <?php echo $category['name']; ?> </option>
                                         <?php endforeach; ?>
@@ -143,7 +150,7 @@
 
                                 <div class="form-group">
                                     <label>Material</label>
-                                    <select name="material" class="form-control js-example-basic-multiple">
+                                    <select name="material[]" multiple="multiple" class="form-control js-example-basic-multiple">
                                         <?php foreach($materials as $key => $material ): ?>
                                             <option value="<?php echo $material['id']; ?>"> <?php echo $material['name']; ?> </option>
                                         <?php endforeach; ?>

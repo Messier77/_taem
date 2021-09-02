@@ -90,16 +90,26 @@ let myApp = {
   filterByCategory: function() {
     let newProducts = myApp.productList;
 
-    const activeCategoryNames = myApp.filters.categories.filter((cat) => {
+    debugger;
 
-      const id = parseInt(cat.category_id);
+    const activeCategoryIds = myApp.filters.categories.filter((cat) => {
+
+      const id = parseInt(cat.id);
       if (myApp.activeFilters.categories.includes(id)) {
         return cat;
       }
-    }).map(cat => cat.category_tag);
+    }).map(cat => cat.id);
 
     newProducts = newProducts.filter((prod) => {
-      if (activeCategoryNames.includes(prod.product_category)) {
+
+      let hasCategory = false;
+
+      prod.product_categories.forEach((category) => {
+        if (activeCategoryIds.includes(category)) {
+          hasCategory = true;
+        }
+      });
+      if (hasCategory) {
         return prod;
       }
     });
@@ -130,11 +140,11 @@ let myApp = {
 
     myApp.filters.materials.forEach(material => {
 
-      if (myApp.activeFilters.materials.includes(parseInt(material.material_id))) {
+      if (myApp.activeFilters.materials.includes(parseInt(material.id))) {
         let item = `
           <div class="added-filter">
-            <img onclick="myApp.toggleMaterial(${parseInt(material.material_id)})" src="../images/icons/close-filter.svg" alt="">
-            <p>${material.material_name}</p>
+            <img onclick="myApp.toggleMaterial(${parseInt(material.id)})" src="../images/icons/close-filter.svg" alt="">
+            <p>${material.name}</p>
           </div>
         `;
         res += item;
@@ -143,11 +153,11 @@ let myApp = {
 
     myApp.filters.categories.forEach(category => {
 
-      if (myApp.activeFilters.categories.includes(parseInt(category.category_id))) {
+      if (myApp.activeFilters.categories.includes(parseInt(category.id))) {
         let item = `
           <div class="added-filter">
-            <img onclick="myApp.toggleCategory(${parseInt(category.category_id)})" src="../images/icons/close-filter.svg" alt="">
-            <p>${category.category_name}</p>
+            <img onclick="myApp.toggleCategory(${parseInt(category.id)})" src="../images/icons/close-filter.svg" alt="">
+            <p>${category.name}</p>
           </div>
         `;
         res += item;
@@ -207,10 +217,10 @@ let myApp = {
       myApp.filters.categories.forEach(element => {
 
 
-          let id = element.id;  
+          let id = parseInt(element.id);  
           let item = `
                 <input data-category="${id}" type="checkbox" id="category${id}" name="categories" value="${element.name}" rel="${element.name}">
-                <label for="category${id}" onclick="myApp.toggleCategory(${id})" class="category label ${myApp.activeFilters.categories.includes(element.id) ? 'checked' : ''}">${element.name}</label>
+                <label for="category${id}" onclick="myApp.toggleCategory(${id})" class="category label ${myApp.activeFilters.categories.includes(id) ? 'checked' : ''}">${element.name}</label>
               `;
       res += item;
       });
@@ -231,6 +241,8 @@ let myApp = {
 
   },
   toggleCategory: function(categoryId) {
+
+    debugger;
 
     if (myApp.activeFilters.categories.includes(categoryId)) {
       myApp.activeFilters.categories = myApp.activeFilters.categories.filter((id) => id !== categoryId);

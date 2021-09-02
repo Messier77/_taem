@@ -7,7 +7,7 @@
 
     <script>
         $(document).ready(function() {
-        $('.js-example-basic-multiple').select2({multiple: true, placeholder: "", allowClear: false});
+        $('.js-example-basic-multiple').select2({multiple: true, placeholder: "ddd"});
     });
     </script>
 
