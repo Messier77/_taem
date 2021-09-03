@@ -89,7 +89,7 @@
         <h1 class="h1-work"><?php echo $product['name'] ?></h1>
 
         <div class="detail-content">
-            <img src="../images/products/broken-lamp/1-broken-lamp-facebook@2x.png" alt="" class="project-image">
+            <img src="../images/products/" alt="" class="project-image">
     
             <div class="product-description">
                 <h5>Description</h5>

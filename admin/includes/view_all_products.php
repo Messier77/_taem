@@ -14,6 +14,61 @@
     </thead>
     <tbody>
         <?php
+            $categories = json_decode(get_categories());
+            $materials = json_decode(get_materials());
+
+            $cats = [];
+            $mats = [];
+
+            foreach ($categories as $key => $cat) {
+                $cats[$cat->id] = $cat->name;
+            }
+
+            function categoryIdsToNames($ids, $cats) {
+                if(!$ids) {
+                    return '';
+                }
+
+                $temp_array  = explode(',', $ids);
+                $res = [];
+                foreach ($temp_array as $value) {
+                    if($cats[$value]) {
+                        $res[$value] = $cats[$value];
+                        array_push($res, $cats[$value]);
+                    }
+                }
+                return implode(', ', $res);
+            }
+
+            foreach ($materials as $key => $mat) {
+                $mats[$mat->id] = $mat->name;
+            }
+
+            function materialIdsToNames($ids, $mats) {
+                if(!$ids) {
+                    return '';
+                }
+
+                $temp_array  = explode(',', $ids);
+                $res = [];
+                foreach ($temp_array as $value) {
+                    if($mats[$value]) {
+                        $res[$value] = $mats[$value];
+                        array_push($res, $mats[$value]);
+                    }
+                }
+                return implode(', ', $res);
+            }
+
+            function isFeaturedToStatus($status) {
+                if($status == 1) {
+                    return 'Active';
+                }
+                return 'Inactive';
+            }
+            
+            
+
             $query = "SELECT * FROM products";
             $select_products = mysqli_query($connection, $query);
     
@@ -23,10 +78,10 @@
                 $title = $row['title'];
                 $description = $row['description'];
                 $short_description = $row['short_description'];
-                $category_id = $row['product_categories'];
-                $material_id = $row['product_materials'];
+                $category_id = categoryIdsToNames($row['product_categories'], $cats);
+                $material_id = materialIdsToNames($row['product_materials'], $mats);
                 $featured_image = $row['featured_image'];
-                $is_featured = $row['is_featured'];
+                $is_featured = isFeaturedToStatus($row['is_featured']);
 
             echo "<tr>";
             echo "<td>$id</td>";

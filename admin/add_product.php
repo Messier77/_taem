@@ -14,6 +14,40 @@
 
     $errors = [];
 
+    function uploadImageAndGetPath($image) {
+        if (isset($image)) {
+            // get details of the uploaded file
+            $fileTmpPath = $image['tmp_name'];
+            $fileName = $image['name'];
+            $fileSize = $image['size'];
+            $fileType = $image['type'];
+            $fileNameCmps = explode(".", $fileName);
+            $fileExtension = strtolower(end($fileNameCmps));
+
+            // sanitize file-name
+            $newFileName = md5(time() . $fileName) . '-' . $fileNameCmps[0] . '.' . $fileExtension;
+
+            // check if file has one of the following extensions
+            $allowedfileExtensions = array('jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
+
+            if (in_array($fileExtension, $allowedfileExtensions)) {
+                // directory in which the uploaded file will be moved
+                $uploadFileDir = '../images/products/';
+                $dest_path = $uploadFileDir . $newFileName;
+
+                if(move_uploaded_file($fileTmpPath, $dest_path)) {
+                    $message ='File is successfully uploaded. path: '  . $dest_path;
+                }
+                else {
+                    $message = 'There was some error moving the file to upload directory. Please make sure the upload directory is writable by web server.';
+                }
+            } else {
+                $message = 'Upload failed. Allowed file types: ' . implode(',', $allowedfileExtensions);
+            }
+            return $newFileName;
+        }
+    }
+
     if(isset($_POST['submit'])) {
         // add product to database
 
@@ -64,40 +98,18 @@
 
         $newFileName = '';
         if (isset($_FILES['featured_image'])) {
-            // get details of the uploaded file
-            $fileTmpPath = $_FILES['featured_image']['tmp_name'];
-            $fileName = $_FILES['featured_image']['name'];
-            $fileSize = $_FILES['featured_image']['size'];
-            $fileType = $_FILES['featured_image']['type'];
-            $fileNameCmps = explode(".", $fileName);
-            $fileExtension = strtolower(end($fileNameCmps));
-
-            // sanitize file-name
-            $newFileName = md5(time() . $fileName) . '-' . $fileNameCmps[0] . '.' . $fileExtension;
-
-            // check if file has one of the following extensions
-            $allowedfileExtensions = array('jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
-
-            if (in_array($fileExtension, $allowedfileExtensions)) {
-                // directory in which the uploaded file will be moved
-                $uploadFileDir = '../images/products/';
-                $dest_path = $uploadFileDir . $newFileName;
-
-                if(move_uploaded_file($fileTmpPath, $dest_path)) {
-                    $message ='File is successfully uploaded. path: '  . $dest_path;
-                }
-                else {
-                    $message = 'There was some error moving the file to upload directory. Please make sure the upload directory is writable by web server.';
-                }
-            } else {
-                $message = 'Upload failed. Allowed file types: ' . implode(',', $allowedfileExtensions);
-            }
+            $newFileName = uploadImageAndGetPath($_FILES['featured_image']);
         }
 
         if(empty($errors)) {
             insert_product($product_name, $product_title, $product_description, $product_short_description, $product_categories, $product_materials, $newFileName, $is_featured);
+            $productId = json_decode(selectLastAddedProduct())[0]->id;
+            if($_FILES['main_image']) {
+                $image = uploadImageAndGetPath($_FILES['main_image']);
+                insertProductImage($productId, $image);
+            }
+            
         } 
-
     }
 ?>
 
@@ -204,8 +216,8 @@
                                 </div>
 
                                 <div class="form-group col-xs-6">
-                                    <label for="product_main_photo">Main image (Product page)</label>
-                                    <input type="file" id="product_main_photo" name="product_main_photo"> 
+                                    <label for="main_image">Main image (Product page)</label>
+                                    <input type="file" id="main_image" name="main_image"> 
                                     <p class="help-block">Upload main image.</p>
                                 </div>
 

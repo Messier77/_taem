@@ -33,6 +33,18 @@ function get_connection() {
     return $mysqli_connection;
 }
 
+function selectLastAddedProduct() {
+    $connection = get_connection();
+
+    $query = "SELECT * FROM products ORDER BY id DESC LIMIT 1";
+    $select_last_product = $connection->query($query);
+    
+    $myArray = $select_last_product->fetch_all(MYSQLI_ASSOC);
+    $results = json_encode($myArray);
+    $connection->close();
+    return $results;    
+}
+
 function get_products() {
     $connection = get_connection();
 
@@ -42,7 +54,6 @@ function get_products() {
     // $myArray = mysqli_fetch_all($select_all_products_query, MYSQLI_ASSOC);
     $myArray = $select_all_products_query->fetch_all(MYSQLI_ASSOC);
     $results = json_encode($myArray);
-    var_dump($results);
     $connection->close();
     return $results;    
 }
@@ -52,6 +63,19 @@ function insert_product($name, $title, $description, $short_description, $produc
 
     $query = "INSERT INTO products (name, title, description, short_description, active, featured_image, product_categories, product_materials, is_featured) 
     VALUES ('$name', '$title', '$description', '$short_description', 1, '$featured_image', '$product_categories', '$product_materials', '$is_featured')";
+
+    if ($connection->query($query) === TRUE) {
+        pr("New record created successfully");
+      } else {
+       pr("Error: " . $connection->error);
+      }
+    $connection->close();
+}
+
+function insertProductImage($product_id, $image_name) {
+    $connection = get_connection();
+
+    $query = "INSERT INTO product_images (product_id, image) VALUES ('$product_id', '$image_name')";
 
     if ($connection->query($query) === TRUE) {
         pr("New record created successfully");
