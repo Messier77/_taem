@@ -2527,6 +2527,11 @@ output {
   line-height: 1.42857143;
   color: #555;
 }
+
+.select2-selection--multiple {
+  height: 34px;
+}
+
 .form-control {
   display: block;
   width: 100%;

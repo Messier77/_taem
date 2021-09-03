@@ -30,28 +30,31 @@
         } elseif(strlen($product_title) > 25) {
             $errors['product_title'] = 'Product title must be less than 25 characters!';
         }
-        
-        if(!empty($_POST['product_description'])) {
-            $product_description = $_POST['product_description'];
-            pr('You have chosen the product_description: ' . $product_description);
+
+        $product_description = $_POST['product_description'];
+        if(strlen($product_description) > 4000) {
+            $errors['product_description'] = 'Product description must be less than 4000 characters!';
         }
 
-        $product_short_description = 'short desc';
-        if(!empty($_POST['product_short_description'])) {
-            $product_short_description = $_POST['product_short_description'];
-            pr('You have chosen the product_short_description: ' . $product_short_description);
+        $product_short_description = $_POST['product_short_description'];
+        if(strlen($product_short_description) > 150) {
+            $errors['product_description'] = 'Product description must be less than 150 characters!';
         }
 
         $product_categories = '';
         if(!empty($_POST['category'])) {
             $product_categories = implode(',', $_POST['category']);
-            pr('You have chosen the category: ' . $product_categories);
+        }
+        if(empty($_POST['category'])) {
+            $errors['product_categories'] = 'Please select a category!';
         }
 
         $product_materials = '';
         if(!empty($_POST['material'])) {
             $product_materials = implode(',', $_POST['material']);
-            pr('You have chosen the material: ' . $product_materials);
+        }
+        if(empty($_POST['material'])) {
+            $errors['product_materials'] = 'Please select a material!';
         }
 
         $is_featured = 0;
@@ -114,8 +117,8 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Welcome to Admin
-                            <small>Author</small>
+                            Welcome to Trial and Error Makers
+                            <small>Admin</small>
                         </h1>
 
                         <!-- Add product form -->
@@ -144,37 +147,53 @@
 
                                 <div class="form-group">
                                     <label for="product_description">Product description</label>
-                                    <textarea style="resize:none" rows=10 class="form-control" type="text" name="product_description"></textarea>
+                                    <textarea style="resize:none" rows=10 class="form-control" type="text" name="product_description" value="<?php echo(isset($product_description) ? $product_description :''); ?>"></textarea>
+
+                                    <?php if(isset($errors['product_description'])): ?>
+                                    <p class="text-danger"><?php echo($errors['product_description']); ?></p>
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="product_short_description">Product short description</label>
-                                    <input class="form-control" type="text" name="product_short_description">
+                                    <input class="form-control" type="text" name="product_short_description" value="<?php echo(isset($product_short_description) ? $product_short_description :''); ?>">
+
+                                    <?php if(isset($errors['product_short_description'])): ?>
+                                    <p class="text-danger"><?php echo($errors['product_short_description']); ?></p>
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Category</label>
-                                    <select name="category[]" multiple="multiple" class="form-control js-example-basic-multiple">
+                                    <label for="id_label_multiple">Category</label>
+                                    <select name="category[]" multiple="multiple" class="js-example-basic-multiple js-states form-control js-example-basic-hide-search-multi" value="<?php echo(isset($_POST['category']) ? $_POST['category'] :''); ?>">
                                         <?php foreach($categories as $key => $category ): ?>
                                             <option value="<?php echo $category['id']; ?>"> <?php echo $category['name']; ?> </option>
                                         <?php endforeach; ?>
                                     </select>
+
+                                    <?php if(isset($errors['product_categories'])): ?>
+                                    <p class="text-danger"><?php echo($errors['product_categories']); ?></p>
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Material</label>
-                                    <select name="material[]" multiple="multiple" class="form-control js-example-basic-multiple">
+                                    <label>Materials</label>
+                                    <select name="material[]" multiple="multiple" class="js-example-basic-multiple js-states form-control js-example-basic-hide-search-multi" value="<?php echo(isset($product_materials) ? $product_materials :''); ?>">
                                         <?php foreach($materials as $key => $material ): ?>
                                             <option value="<?php echo $material['id']; ?>"> <?php echo $material['name']; ?> </option>
                                         <?php endforeach; ?>
                                     </select>
+
+                                    <?php if(isset($errors['product_materials'])): ?>
+                                    <p class="text-danger"><?php echo($errors['product_materials']); ?></p>
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Featured</label>
                                     <select name="is_featured" class="form-control">
-                                        <option value="0">No</option>
                                         <option value="1">Yes</option>
+                                        <option value="0">No</option>
                                     </select>
                                 </div>
 

@@ -23,8 +23,8 @@
                 $title = $row['title'];
                 $description = $row['description'];
                 $short_description = $row['short_description'];
-                $category_id = $row['category_id'];
-                $material_id = $row['material_id'];
+                $category_id = $row['product_categories'];
+                $material_id = $row['product_materials'];
                 $featured_image = $row['featured_image'];
                 $is_featured = $row['is_featured'];
 
