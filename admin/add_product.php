@@ -1,6 +1,4 @@
 <?php include "./includes/admin_header.php";?>
-
-
 <?php
 
         $query = "SELECT * FROM categories";
@@ -12,10 +10,26 @@
         $select_all_materials_query = mysqli_query($connection, $query);
         $materials = mysqli_fetch_all($select_all_materials_query, MYSQLI_ASSOC);
 
-    $errors = [];
+        $errors = [];
+
+        $product_name = '';
+        $product_title = '';
+        $product_description = '';
+        $product_short_description = '';
+        $product_categories = '';
+        $product_categories_select2 = [];
+        $product_materials = '';
+        $product_materials_select2 = [];
+        $newFileName = '';
+        $is_featured = 0;
+        $youtube = '';
+        
 
     function uploadImageAndGetPath($image) {
         if (isset($image)) {
+            if($image['size'] == 0) {
+                return null;
+            }
             // get details of the uploaded file
             $fileTmpPath = $image['tmp_name'];
             $fileName = $image['name'];
@@ -26,7 +40,6 @@
 
             // sanitize file-name
             $newFileName = md5(time() . $fileName) . '-' . $fileNameCmps[0] . '.' . $fileExtension;
-
             // check if file has one of the following extensions
             $allowedfileExtensions = array('jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
 
@@ -43,6 +56,7 @@
                 }
             } else {
                 $message = 'Upload failed. Allowed file types: ' . implode(',', $allowedfileExtensions);
+                return null;
             }
             return $newFileName;
         }
@@ -72,10 +86,9 @@
 
         $product_short_description = $_POST['product_short_description'];
         if(strlen($product_short_description) > 150) {
-            $errors['product_description'] = 'Product description must be less than 150 characters!';
+            $errors['product_short_description'] = 'Short description must be less than 150 characters!';
         }
 
-        $product_categories = '';
         if(!empty($_POST['category'])) {
             $product_categories = implode(',', $_POST['category']);
         }
@@ -83,7 +96,6 @@
             $errors['product_categories'] = 'Please select a category!';
         }
 
-        $product_materials = '';
         if(!empty($_POST['material'])) {
             $product_materials = implode(',', $_POST['material']);
         }
@@ -91,30 +103,38 @@
             $errors['product_materials'] = 'Please select a material!';
         }
 
-        $is_featured = 0;
         if(!empty($_POST['is_featured'])) {
             $is_featured = $_POST['is_featured'];
         }
 
-        $newFileName = '';
+        $youtube = $_POST['youtube'];
+        if(strlen($youtube) > 150) {
+            $errors['YouTube'] = 'YouTube URL must be less than 150 characters!';
+        }
+
         if (isset($_FILES['featured_image'])) {
             $newFileName = uploadImageAndGetPath($_FILES['featured_image']);
         }
 
         if(empty($errors)) {
-            insert_product($product_name, $product_title, $product_description, $product_short_description, $product_categories, $product_materials, $newFileName, $is_featured);
+            insert_product($product_name, $product_title, $product_description, $product_short_description, $product_categories, $product_materials, $newFileName, $is_featured, $youtube);
             $productId = json_decode(selectLastAddedProduct())[0]->id;
             if($_FILES['main_image']) {
                 $image = uploadImageAndGetPath($_FILES['main_image']);
-                insertProductImage($productId, $image);
+                insertProductImage($productId, $image, 1);
             }
-            
+            for($i = 1; $i < 7; $i++) {
+                if(isset($_FILES['other_image_' . $i])) {
+                    $image = uploadImageAndGetPath($_FILES['other_image_' . $i]);
+                    if($image != null){
+                        insertProductImage($productId, $image, 0);
+                    }     
+                }  
+            }
+            $success_message = "It worked";
         } 
     }
 ?>
-
-
-
 
 
     <div id="wrapper">
@@ -129,14 +149,16 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Welcome to Trial and Error Makers
+                            Trial and Error Makers
                             <small>Admin</small>
                         </h1>
 
                         <!-- Add product form -->
                         <div class="col-sm-6">
 
-                            
+                            <?php if(isset($success_message)) : ?>
+                                <div class="alert alert-success" role="alert">Product successfully added</div>
+                            <?php endif; ?>
 
                             <form action="" method="post" enctype="multipart/form-data">
                                 <div class="form-group">
@@ -159,7 +181,7 @@
 
                                 <div class="form-group">
                                     <label for="product_description">Product description</label>
-                                    <textarea style="resize:none" rows=10 class="form-control" type="text" name="product_description" value="<?php echo(isset($product_description) ? $product_description :''); ?>"></textarea>
+                                    <textarea style="resize:none" rows=10 class="form-control" type="text" name="product_description"><?php echo(isset($product_description) ? $product_description :''); ?></textarea>
 
                                     <?php if(isset($errors['product_description'])): ?>
                                     <p class="text-danger"><?php echo($errors['product_description']); ?></p>
@@ -177,9 +199,9 @@
 
                                 <div class="form-group">
                                     <label for="id_label_multiple">Category</label>
-                                    <select name="category[]" multiple="multiple" class="js-example-basic-multiple js-states form-control js-example-basic-hide-search-multi" value="<?php echo(isset($_POST['category']) ? $_POST['category'] :''); ?>">
+                                    <select name="category[]" multiple="multiple" class="js-example-basic-multiple js-states form-control js-example-basic-hide-search-multi" value="<?php echo $product_categories_select2; ?>">
                                         <?php foreach($categories as $key => $category ): ?>
-                                            <option value="<?php echo $category['id']; ?>"> <?php echo $category['name']; ?> </option>
+                                            <option <?php echo in_array($category['id'], $product_categories_select2) ? 'selected' : ''?> value="<?php echo $category['id']; ?>"> <?php echo $category['name']; ?> </option>
                                         <?php endforeach; ?>
                                     </select>
 
@@ -209,57 +231,68 @@
                                     </select>
                                 </div>
 
-                                <div class="form-group col-xs-6">
+                                <div class="form-group">
+                                    <label for="youtube">YouTube URL</label>
+                                    <input class="form-control" type="text" name="youtube" value="<?php echo(isset($youtube) ? $youtube :''); ?>">
+
+                                    <?php if(isset($errors['youtube'])): ?>
+                                    <p class="text-danger"><?php echo($errors['youtube']); ?></p>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- <div class="form-group">
                                     <label for="featured_image">Featured image (Home and Work pages)</label>
                                     <input type="file" id="featured_image" name="featured_image"> 
                                     <p class="help-block">Upload feature image.</p>
-                                </div>
+                                </div> -->
 
-                                <div class="form-group col-xs-6">
+                                <div class="form-group">
                                     <label for="main_image">Main image (Product page)</label>
                                     <input type="file" id="main_image" name="main_image"> 
                                     <p class="help-block">Upload main image.</p>
                                 </div>
 
-                                <div class="form-group col-xs-4">
-                                    <label for="product_picture_1">Picture 1</label>
-                                    <input type="file" id="product_picture_1" name="product_picture_1"> 
-                                    <p class="help-block">Upload image 1</p>
-                                </div>
-
-                                <div class="form-group col-xs-4">
-                                    <label for="product_picture_2">Picture 2</label>
-                                    <input type="file" id="product_picture_2" name="product_picture_2"> 
-                                    <p class="help-block">Upload image 2</p>
-                                </div>
-
-                                <div class="form-group col-xs-4">
-                                    <label for="product_picture_3">Picture 3</label>
-                                    <input type="file" id="product_picture_3" name="product_picture_3"> 
-                                    <p class="help-block">Upload image 3</p>
-                                </div>
-
-                                <div class="form-group col-xs-4">
-                                    <label for="product_picture_4">Picture 4</label>
-                                    <input type="file" id="product_picture_4" name="product_picture_4"> 
-                                    <p class="help-block">Upload image 4</p>
-                                </div>
-
-                                <div class="form-group col-xs-4">
-                                    <label for="product_picture_5">Picture 5</label>
-                                    <input type="file" id="product_picture_5" name="product_picture_5"> 
-                                    <p class="help-block">Upload image 5</p>
-                                </div>
-
-                                <div class="form-group col-xs-4">
-                                    <label for="product_picture_6">Picture 6</label>
-                                    <input type="file" id="product_picture_6" name="product_picture_6"> 
-                                    <p class="help-block">Upload image 6</p>
-                                </div>
 
 
                                 <div class="form-group">
-                                    <input class="btn btn-primary" type="submit" name="submit" value="Add Product">
+                                    <div class="img-container">
+                                        <div class="img-wrapper">
+                                            <div class="img-image">
+                                                <img src="" alt="" class="img-img display-none">
+                                            </div>
+                                            <div class="img-content">
+                                                <div class="img-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                                <div class="img-text">No file chosen, yet!</div>
+                                            </div>
+                                            <div id="cancel-btn" class="cancel-btn"><i class="fas fa-times"></i></div>
+                                            <div class="file-name">File name here</i></div>
+                                        </div>
+                                        <input id="default-btn" type="file" name="featured_image" class="default-btn">
+                                        <label type="button" for="default-btn" id="custom-btn" class="custom-btn">Choose a file</label>
+                                    </div>
+                                   
+                                </div>
+
+
+
+                                <div id="images" class="images">
+                                    <div class="form-group">
+                                        <label for="product_picture_1">Picture 1</label>
+                                        <input type="file" id="product_picture_1" name="other_image_1"> 
+                                        <p class="help-block">Upload image 1</p>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-xs-12" style="padding-left: 0px; margin-bottom: 15px;">
+                                    <button id="add-image" type="button" class="btn btn-info col-xs-6">Add Image</button>
+                                </div>
+
+
+                                
+
+                                <div class="form-group">
+                                    <input class="btn btn-primary col-xs-12" type="submit" name="submit" value="Add Product">
                                 </div>
                             </form>
                         </div>
@@ -274,4 +307,79 @@
         </div>
         <!-- /#page-wrapper -->
 
+<script>
+        $(document).ready(function() {
+            $('.js-example-basic-multiple').select2({multiple: true, placeholder: "Please select value"});
+            $('.js-example-basic-hide-search-multi').on('select2:opening select2:closing', function( event ) {
+                var $searchfield = $(this).parent().find('.select2-search__field');
+                $searchfield.prop('disabled', true);});
+
+            let currentImageIndex = 2;
+            let maxIndex = 6;
+
+            $('#add-image').on('click', function(e) {
+
+                e.preventDefault();
+
+                if (currentImageIndex > maxIndex) {
+                    $('#add-image').prop('disabled', true);
+                } else {
+                    $("#images").append(`<div class="form-group">
+                                        <label for="product_picture_${currentImageIndex}">Picture ${currentImageIndex}</label>
+                                        <input type="file" id="product_picture_${currentImageIndex}" name="other_image_${currentImageIndex}"> 
+                                        <p class="help-block">Upload image ${currentImageIndex}</p>
+                                    </div>`);
+                    currentImageIndex++;
+                }
+            });
+
+            $('.default-btn').on('change', function(e){
+                let imgContainer = $(this).parent();
+                let cancelBtn = imgContainer.find(".cancel-btn");
+                let img = imgContainer.find(".img-img");
+                // imgContainer.addClass("has-image");
+
+                cancelBtn.on('click', function(ev){
+                    imgContainer.removeClass("has-image");
+                });
+                console.log(img, "Click");
+                console.log(this, "This");
+            });
+        });
+
+
+
+        const fileName = document.querySelector(".file-name");
+        const defaultBtn = document.querySelector("#default-btn");
+        const cancelBtn = document.querySelector("#cancel-btn");
+        const img = document.querySelector(".img-img");
+        const imgContainer = document.querySelector(".img-container")
+        let regExp = /[0-9a-zA-Z\^\&\'\@\{\}\[\]\,\$\=\!\-\#\(\)\.\%\+\~\_ ]+$/;
+
+        defaultBtn.addEventListener("change", function() {
+            const file = this.files[0];
+
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    const result = reader.result;
+                    img.src = result;
+                    imgContainer.classList.add("has-image");
+                }
+                cancelBtn.addEventListener("click", function() {
+                    img.src = "";
+                    imgContainer.classList.remove("has-image");
+                });
+                reader.readAsDataURL(file);
+            }
+            if(this.value) {
+                let valueStore = this.value.match(regExp);
+                fileName.textContent = valueStore;
+            }
+
+        });
+
+</script>
+
 <?php include "./includes/admin_footer.php";?>
+

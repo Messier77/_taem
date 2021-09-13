@@ -45,10 +45,32 @@ function selectLastAddedProduct() {
     return $results;    
 }
 
-function get_products() {
+function getProductImages($productId) {
     $connection = get_connection();
 
-    $query = "select * FROM products WHERE is_featured = 1";
+    $query = "select * FROM product_images WHERE product_id = $productId AND type = 0";
+    $select_all_images_query = $connection->query($query);
+
+    $myArray = $select_all_images_query->fetch_all(MYSQLI_ASSOC);
+    $connection->close();
+    return $myArray;    
+}
+
+function getMainImages($productId) {
+    $connection = get_connection();
+
+    $query = "select * FROM product_images WHERE product_id = $productId AND type = 1";
+    $select_all_images_query = $connection->query($query);
+
+    $myArray = $select_all_images_query->fetch_all(MYSQLI_ASSOC);
+    $connection->close();
+    return $myArray; 
+}
+
+function get_all_products() {
+    $connection = get_connection();
+
+    $query = "select * FROM products";
     $select_all_products_query = $connection->query($query);
     
     // $myArray = mysqli_fetch_all($select_all_products_query, MYSQLI_ASSOC);
@@ -58,27 +80,62 @@ function get_products() {
     return $results;    
 }
 
-function insert_product($name, $title, $description, $short_description, $product_categories, $product_materials, $featured_image = '', $is_featured = 0) {
+function get_featured_products() {
     $connection = get_connection();
 
-    $query = "INSERT INTO products (name, title, description, short_description, active, featured_image, product_categories, product_materials, is_featured) 
-    VALUES ('$name', '$title', '$description', '$short_description', 1, '$featured_image', '$product_categories', '$product_materials', '$is_featured')";
+    $query = "select * FROM products WHERE is_featured = true";
+    $select_all_products_query = $connection->query($query);
+    
+    // $myArray = mysqli_fetch_all($select_all_products_query, MYSQLI_ASSOC);
+    $myArray = $select_all_products_query->fetch_all(MYSQLI_ASSOC);
+    $results = json_encode($myArray);
+    $connection->close();
+    return $results;    
+}
+
+function insert_product($name, $title, $description, $short_description, $product_categories, $product_materials, $featured_image = '', $is_featured = 0, $youtube) {
+    $connection = get_connection();
+
+    $query = "INSERT INTO products (name, title, description, short_description, active, featured_image, product_categories, product_materials, is_featured, youtube) 
+    VALUES ('$name', '$title', '$description', '$short_description', 1, '$featured_image', '$product_categories', '$product_materials', '$is_featured', '$youtube')";
 
     if ($connection->query($query) === TRUE) {
-        pr("New record created successfully");
       } else {
        pr("Error: " . $connection->error);
       }
     $connection->close();
 }
 
-function insertProductImage($product_id, $image_name) {
+function update_product($id, $name, $title, $description, $short_description, $product_categories, $product_materials, $featured_image = '', $is_featured, $youtube) {
     $connection = get_connection();
 
-    $query = "INSERT INTO product_images (product_id, image) VALUES ('$product_id', '$image_name')";
+    $query = "UPDATE products SET name = '$name', title = '$title', description = '$description', short_description = '$short_description', product_categories = '$product_categories', product_materials = '$product_materials', featured_image = '$featured_image', is_featured = '$is_featured', youtube = '$youtube' WHERE id = $id";
 
     if ($connection->query($query) === TRUE) {
-        pr("New record created successfully");
+      } else {
+       pr("Error: " . $connection->error);
+      }
+    $connection->close();
+}
+
+function updateProductImage($id, $image) {
+    $connection = get_connection();
+
+    $query = "UPDATE product_images SET image = '$image' WHERE id = $id";
+
+    if ($connection->query($query) === TRUE) {
+      } else {
+       pr("Error: " . $connection->error);
+      }
+    $connection->close();
+}
+
+function insertProductImage($product_id, $image_name, $type) {
+    $connection = get_connection();
+
+    $query = "INSERT INTO product_images (product_id, image, type) VALUES ('$product_id', '$image_name', '$type')";
+
+    if ($connection->query($query) === TRUE) {
       } else {
        pr("Error: " . $connection->error);
       }
@@ -113,5 +170,18 @@ function get_categories() {
     $connection->close();
     return $results;    
 }
+
+function getCurrentProduct($id) {
+    $connection = get_connection();
+
+    $query = "select * FROM products WHERE id = $id";
+    $select_all_products_query = $connection->query($query);
+    
+    // $myArray = mysqli_fetch_all($select_all_products_query, MYSQLI_ASSOC);
+    $myArray = $select_all_products_query->fetch_all(MYSQLI_ASSOC);
+    // $results = json_encode($myArray);
+    $connection->close();
+    return $myArray[0];    
+} 
 
 ?>

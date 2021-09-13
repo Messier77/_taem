@@ -10,6 +10,8 @@
             <th>Material</th>
             <th>Photo</th>
             <th>Featured</th>
+            <th>Edit</th>
+            <th>Delete</th>
         </tr>
     </thead>
     <tbody>
@@ -33,9 +35,10 @@
                 $res = [];
                 foreach ($temp_array as $value) {
                     if($cats[$value]) {
-                        $res[$value] = $cats[$value];
+                        // $res[$value] = $cats[$value];
                         array_push($res, $cats[$value]);
                     }
+                    // $res = array_unique($res);
                 }
                 return implode(', ', $res);
             }
@@ -53,9 +56,10 @@
                 $res = [];
                 foreach ($temp_array as $value) {
                     if($mats[$value]) {
-                        $res[$value] = $mats[$value];
+                        // $res[$value] = $mats[$value];
                         array_push($res, $mats[$value]);
                     }
+                    // $res = array_unique($res);
                 }
                 return implode(', ', $res);
             }
@@ -64,7 +68,7 @@
                 if($status == 1) {
                     return 'Active';
                 }
-                return 'Inactive';
+                return '';
             }
             
             
@@ -91,8 +95,10 @@
             echo "<td>$short_description</td>";
             echo "<td>$category_id</td>";
             echo "<td>$material_id</td>";
-            echo "<td><img style='width: 100%; max-width: 100px' src='../images/products/$id/$featured_image'></td>";
+            echo "<td><img style='width: 100%; max-width: 100px' src='../images/products/$featured_image'></td>";
             echo "<td>$is_featured</td>";
+            echo "<td><a href='./edit_product.php?id={$id}'>Edit</a></td>";
+            echo "<td>Delete</td>";
             echo "</tr>";
             }
         ?>

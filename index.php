@@ -72,13 +72,13 @@
                     $product_id = $row['id'];
                     $product_name = $row['name'];
                     $product_short_description = $row['short_description'];
-                    $product_featured_photo = $row['featured_image'];
+                    $featured_image = $row['featured_image'];
             ?>
 
             <!-- Single project -->
             <a href="#">
                 <div class="project">
-                    <img src="./images/products/<?php echo $product_id ?>/<?php echo $product_featured_photo ?>" alt="" class="project-img" />
+                    <img src="./images/products/<?php echo $featured_image ?>" alt="" class="project-img" />
                     <div class="project-info">
                         <h4><?php echo $product_name ?></h4>
                         <p><?php echo $product_short_description ?></p>

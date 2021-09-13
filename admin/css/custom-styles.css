@@ -1,0 +1,127 @@
+.form-group > .img-container {
+  display: -ms-grid;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  height: 350px;
+  width: 50%;
+}
+
+.form-group > .img-container > .img-wrapper {
+  position: relative;
+  height: 300px;
+  width: 100%;
+  border: 2px dashed #cba25f;
+  border-radius: 10px;
+  background: #FFFFFF;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  overflow: hidden;
+}
+
+.img-wrapper .img-image {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.img-wrapper .img-image .img-img {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.img-wrapper .img-icon {
+  font-size: 100px;
+  color: #cba25f;
+}
+
+.img-wrapper .img-text {
+  font-size: 20px;
+  font-weight: 500;
+  color: #969696;
+}
+
+.img-wrapper .cancel-btn {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #969696;
+  display: none;
+}
+
+.img-wrapper .file-name {
+  position: absolute;
+  bottom: 0px;
+  color: #FFFFFF;
+  width: 100%;
+  background: #cba25f;
+  padding: 4px 0;
+  font-size: 12px;
+  display: none;
+}
+
+.display-none {
+  display: none;
+}
+
+.img-container .custom-btn {
+  margin-top: 10px;
+  width: 100%;
+  height: 25px;
+  display: block;
+  border: none;
+  background: #cba25f;
+  color: #FFFFFF;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.img-container .default-btn {
+  visibility: hidden;
+}
+
+.img-container.has-image .img-wrapper {
+  border: none;
+}
+
+.img-container.has-image .img-content {
+  display: none;
+}
+
+.img-container.has-image .file-name {
+  display: block;
+}
+
+.img-container.has-image .img-img {
+  display: block;
+}
+
+.img-container.has-image .cancel-btn {
+  display: block;
+  color: #cba25f;
+}
+/*# sourceMappingURL=custom-styles.css.map */

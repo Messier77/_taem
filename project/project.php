@@ -3,20 +3,20 @@
 
     if (isset($_GET['product'])) {
         $id = $_GET['product'];
-        echo 'id ' . $id;
 
         if (!is_numeric($id)) {
             return false;
         }
 
+        $images = getProductImages($id);
+        $mainImages = getMainImages($id);
+        $mainImage = $mainImages[0]['image'];
 
         $query = "SELECT * FROM products WHERE id = $id";
         $select_all_products_query = mysqli_query($connection, $query);
 
         $myArray = mysqli_fetch_all($select_all_products_query, MYSQLI_ASSOC);
         $product = $myArray[0];
-
-        // echo '<pre>' , var_dump($product) , '</pre>';    pretty print 
     }
 
 
@@ -89,23 +89,22 @@
         <h1 class="h1-work"><?php echo $product['name'] ?></h1>
 
         <div class="detail-content">
-            <img src="../images/products/" alt="" class="project-image">
+            <img src="../images/products/<?php echo $mainImage; ?>" alt="" class="project-image">
     
             <div class="product-description">
                 <h5>Description</h5>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta tempore veritatis deleniti modi voluptates minima? Commodi eaque repellat doloribus, quaerat numquam sequi minus necessitatibus error? Quas ipsam nulla nobis eum qui maiores dicta fugiat iure quos? Accusamus impedit sit, quod non harum ex? Adipisci, fuga beatae? Recusandae et doloremque explicabo perferendis sed quas maxime tempore consequatur dolore inventore ullam, minus, quia consequuntur corrupti eveniet quis beatae aut quam iste labore?</p>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum, expedita ullam id animi, optio culpa voluptates atque ab delectus suscipit doloribus dicta sit architecto maxime doloremque iusto fugiat itaque laborum provident. Libero accusamus distinctio sapiente, impedit odio voluptatem esse architecto facilis deleniti necessitatibus exercitationem fugit assumenda velit iure voluptas, molestiae hic quisquam? Officiis facere adipisci quae consequuntur dolor similique obcaecati!</p>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates magni dolore reprehenderit, necessitatibus praesentium ut quos ad incidunt explicabo exercitationem.</p>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut consectetur rem eius alias architecto rerum vel perspiciatis obcaecati, consequuntur voluptatum ducimus inventore nostrum optio. Sed quod, explicabo possimus non excepturi eum repellat quibusdam accusamus ad ex, voluptatibus veniam? Nobis, esse?</p>
-                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Distinctio, totam cupiditate reiciendis officiis ducimus omnis repellendus deserunt quos quibusdam in, doloremque placeat a laboriosam voluptatum minus. Harum modi rem deleniti.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta tempore veritatis deleniti modi voluptates minima? Commodi eaque repellat doloribus, quaerat numquam sequi minus necessitatibus error? Quas ipsam nulla nobis eum qui maiores dicta fugiat iure quos? Accusamus impedit sit, quod non harum ex? Adipisci, fuga beatae? Recusandae et doloremque explicabo perferendis sed quas maxime tempore consequatur dolore inventore ullam, minus, quia consequuntur corrupti eveniet quis beatae aut quam iste labore?</p>
+                <p><?php echo $product['description'] ?></p>
             </div>
     
-            <img src="../images/products/broken-lamp/2-broken-lamp-facebook@2x.png" alt="" class="project-image">
+            
     
             <img src="../images/products/broken-lamp/3-broken-lamp-facebook@2x.png" alt="" class="project-image">
     
             <img src="../images/products/broken-lamp/4-broken-lamp-facebook@2x.png" alt="" class="project-image">
+
+            <?php foreach($images as $key => $image ): ?>
+                <img src="../images/products/<?php echo $image['image']; ?>" alt="" class="project-image">
+            <?php endforeach; ?>
     
             <div class="video">
                 <iframe width="100%" height="100%" src="https://www.youtube.com/embed/he0rBYfptfo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="embedded-video"></iframe>

@@ -119,7 +119,7 @@
     <script src="../scripts/scripts.js"></script>
 
     <?php 
-        $products = get_products();
+        $products = get_all_products();
         $categories = get_categories();
         $materials = get_materials();
     ?>

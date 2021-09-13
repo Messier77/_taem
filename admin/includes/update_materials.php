@@ -6,12 +6,12 @@
         if(isset($_GET['edit'])) {
             $material_id = $_GET['edit'];
 
-        $query = "SELECT * FROM materials WHERE material_id = $material_id";
+        $query = "SELECT * FROM materials WHERE id = $material_id";
         $select_materials_id = mysqli_query($connection, $query);
 
         while($row = mysqli_fetch_assoc($select_materials_id)) {
-            $material_id = $row['material_id'];
-            $material_name = $row['material_name'];
+            $material_id = $row['id'];
+            $material_name = $row['name'];
         ?>
 
         <input value="<?php if(isset($material_name)){echo $material_name;} ?>" class="form-control" type="text" name="material_name">
@@ -22,7 +22,7 @@
         // UPDATE QUERY
         if(isset($_POST['update_material'])) {
             $the_material_name = $_POST['material_name'];
-            $query = "UPDATE materials SET material_name = '{$the_material_name}' WHERE material_id = {$material_id} ";
+            $query = "UPDATE materials SET name = '{$the_material_name}' WHERE id = {$material_id} ";
             $update_query = mysqli_query($connection, $query);
 
             if (!$update_query) {
