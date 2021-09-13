@@ -1,6 +1,5 @@
 <?php include "./includes/admin_header.php";?>
 <?php
-
         $query = "SELECT * FROM categories";
         $select_all_categories_query = mysqli_query($connection, $query);
         $categories = mysqli_fetch_all($select_all_categories_query, MYSQLI_ASSOC);
@@ -322,15 +321,18 @@
                 e.preventDefault();
 
                 if (currentImageIndex > maxIndex) {
-                    $('#add-image').prop('disabled', true);
-                } else {
-                    $("#images").append(`<div class="form-group">
-                                        <label for="product_picture_${currentImageIndex}">Picture ${currentImageIndex}</label>
-                                        <input type="file" id="product_picture_${currentImageIndex}" name="other_image_${currentImageIndex}"> 
-                                        <p class="help-block">Upload image ${currentImageIndex}</p>
-                                    </div>`);
-                    currentImageIndex++;
-                }
+                    return false;
+                } 
+                $("#images").append(`<div class="form-group">
+                                    <label for="product_picture_${currentImageIndex}">Picture ${currentImageIndex}</label>
+                                    <input type="file" id="product_picture_${currentImageIndex}" name="other_image_${currentImageIndex}"> 
+                                    <p class="help-block">Upload image ${currentImageIndex}</p>
+                                </div>`);
+
+                    if (currentImageIndex == maxIndex) {
+                        $('#add-image').prop('disabled', true);
+                    }
+                currentImageIndex++;
             });
 
             $('.default-btn').on('change', function(e){
