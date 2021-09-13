@@ -87,7 +87,8 @@
     }
 
     .default-btn {
-        visibility: hidden;
+        // visibility: hidden;
+        display: none;
     }
 
     &.has-image {

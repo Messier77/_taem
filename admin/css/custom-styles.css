@@ -101,7 +101,7 @@
 }
 
 .img-container .default-btn {
-  visibility: hidden;
+  display: none;
 }
 
 .img-container.has-image .img-wrapper {

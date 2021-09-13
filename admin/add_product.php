@@ -37,8 +37,10 @@
             $fileNameCmps = explode(".", $fileName);
             $fileExtension = strtolower(end($fileNameCmps));
 
+            $fileNameForConcat = strlen($fileNameCmps[0]) > 30 ? substr($fileNameCmps[0],0,30) : $fileNameCmps[0];
+
             // sanitize file-name
-            $newFileName = md5(time() . $fileName) . '-' . $fileNameCmps[0] . '.' . $fileExtension;
+            $newFileName = md5(time() . $fileName) . '-' . $fileNameForConcat . '.' . $fileExtension;
             // check if file has one of the following extensions
             $allowedfileExtensions = array('jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
 
@@ -239,46 +241,70 @@
                                     <?php endif; ?>
                                 </div>
 
-                                <!-- <div class="form-group">
-                                    <label for="featured_image">Featured image (Home and Work pages)</label>
-                                    <input type="file" id="featured_image" name="featured_image"> 
-                                    <p class="help-block">Upload feature image.</p>
-                                </div> -->
 
                                 <div class="form-group">
-                                    <label for="main_image">Main image (Product page)</label>
-                                    <input type="file" id="main_image" name="main_image"> 
-                                    <p class="help-block">Upload main image.</p>
-                                </div>
-
-
-
-                                <div class="form-group">
+                                    <label>Main image (Product page)</label>
                                     <div class="img-container">
                                         <div class="img-wrapper">
                                             <div class="img-image">
-                                                <img src="" alt="" class="img-img display-none">
+                                                <img class="img-img display-none">
                                             </div>
                                             <div class="img-content">
                                                 <div class="img-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                                                 <div class="img-text">No file chosen, yet!</div>
                                             </div>
                                             <div id="cancel-btn" class="cancel-btn"><i class="fas fa-times"></i></div>
-                                            <div class="file-name">File name here</i></div>
+                                            <div class="file-name"></div>
                                         </div>
-                                        <input id="default-btn" type="file" name="featured_image" class="default-btn">
-                                        <label type="button" for="default-btn" id="custom-btn" class="custom-btn">Choose a file</label>
+                                        <input id="main_image" type="file" name="main_image" class="default-btn">
+                                        <label for="main_image" id="custom-btn" class="custom-btn">Choose a file</label>
                                     </div>
-                                   
+                                </div>
+
+
+                                <div class="form-group">
+                                    <div class="img-container">
+                                        <label>Featured Image</label>
+                                        <div class="img-wrapper">
+                                            <div class="img-image">
+                                                <img class="img-img display-none">
+                                            </div>
+                                            <div class="img-content">
+                                                <div class="img-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                                <div class="img-text">No file chosen, yet!</div>
+                                            </div>
+                                            <div id="cancel-btn" class="cancel-btn"><i class="fas fa-times"></i></div>
+                                            <div class="file-name"></div>
+                                        </div>
+                                        <input id="featured_image" type="file" name="featured_image" class="default-btn">
+                                        <label for="featured_image" id="custom-btn" class="custom-btn">Choose a file</label>
+                                    </div>
                                 </div>
 
 
 
+
+
+
                                 <div id="images" class="images">
+
                                     <div class="form-group">
-                                        <label for="product_picture_1">Picture 1</label>
-                                        <input type="file" id="product_picture_1" name="other_image_1"> 
-                                        <p class="help-block">Upload image 1</p>
+                                        <div class="img-container">
+                                            <label>Picture 1</label>
+                                            <div class="img-wrapper">
+                                                <div class="img-image">
+                                                    <img class="img-img display-none">
+                                                </div>
+                                                <div class="img-content">
+                                                    <div class="img-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                                    <div class="img-text">No file chosen, yet!</div>
+                                                </div>
+                                                <div id="cancel-btn" class="cancel-btn"><i class="fas fa-times"></i></div>
+                                                <div class="file-name"></div>
+                                            </div>
+                                            <input id="other_image_1" type="file" name="other_image_1" class="default-btn">
+                                            <label for="other_image_1" id="custom-btn" class="custom-btn">Choose a file</label>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -324,10 +350,26 @@
                     return false;
                 } 
                 $("#images").append(`<div class="form-group">
-                                    <label for="product_picture_${currentImageIndex}">Picture ${currentImageIndex}</label>
-                                    <input type="file" id="product_picture_${currentImageIndex}" name="other_image_${currentImageIndex}"> 
-                                    <p class="help-block">Upload image ${currentImageIndex}</p>
-                                </div>`);
+                                        <div class="img-container">
+                                            <label>Picture ${currentImageIndex}</label>
+                                            <div class="img-wrapper">
+                                                <div class="img-image">
+                                                    <img class="img-img display-none">
+                                                </div>
+                                                <div class="img-content">
+                                                    <div class="img-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                                    <div class="img-text">No file chosen, yet!</div>
+                                                </div>
+                                                <div id="cancel-btn" class="cancel-btn"><i class="fas fa-times"></i></div>
+                                                <div class="file-name"></div>
+                                            </div>
+                                            <input id="other_image_${currentImageIndex}" type="file" name="other_image_${currentImageIndex}" class="default-btn">
+                                            <label for="other_image_${currentImageIndex}" id="custom-btn" class="custom-btn">Choose a file</label>
+                                        </div>
+                                    </div>`);
+
+
+                                
 
                     if (currentImageIndex == maxIndex) {
                         $('#add-image').prop('disabled', true);
@@ -335,51 +377,21 @@
                 currentImageIndex++;
             });
 
-            $('.default-btn').on('change', function(e){
+            $('#page-wrapper').on('change', '.default-btn', function(e){
+                let file = e.target.files[0];
                 let imgContainer = $(this).parent();
                 let cancelBtn = imgContainer.find(".cancel-btn");
-                let img = imgContainer.find(".img-img");
-                // imgContainer.addClass("has-image");
+                imgContainer.find(".img-img").attr('src', URL.createObjectURL(file));
+                imgContainer.addClass("has-image");
+
+                imgContainer.find('.file-name').html(file.name);
 
                 cancelBtn.on('click', function(ev){
                     imgContainer.removeClass("has-image");
                 });
-                console.log(img, "Click");
-                console.log(this, "This");
             });
         });
 
-
-
-        const fileName = document.querySelector(".file-name");
-        const defaultBtn = document.querySelector("#default-btn");
-        const cancelBtn = document.querySelector("#cancel-btn");
-        const img = document.querySelector(".img-img");
-        const imgContainer = document.querySelector(".img-container")
-        let regExp = /[0-9a-zA-Z\^\&\'\@\{\}\[\]\,\$\=\!\-\#\(\)\.\%\+\~\_ ]+$/;
-
-        defaultBtn.addEventListener("change", function() {
-            const file = this.files[0];
-
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = function() {
-                    const result = reader.result;
-                    img.src = result;
-                    imgContainer.classList.add("has-image");
-                }
-                cancelBtn.addEventListener("click", function() {
-                    img.src = "";
-                    imgContainer.classList.remove("has-image");
-                });
-                reader.readAsDataURL(file);
-            }
-            if(this.value) {
-                let valueStore = this.value.match(regExp);
-                fileName.textContent = valueStore;
-            }
-
-        });
 
 </script>
 
