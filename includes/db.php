@@ -67,6 +67,39 @@ function getMainImages($productId) {
     return $myArray; 
 }
 
+function getAllProductImages($productId){
+    $connection = get_connection();
+
+    $query = "select * FROM product_images WHERE product_id = $productId";
+    $select_all_images_query = $connection->query($query);
+
+    $myArray = $select_all_images_query->fetch_all(MYSQLI_ASSOC);
+    $connection->close();
+    return $myArray; 
+}
+
+function deleteProduct($id) {
+    $connection = get_connection();
+
+    $query = "DELETE FROM products WHERE id = $id";
+
+    if ($connection->query($query) === TRUE) {
+    } else {
+     pr("Error: " . $connection->error);
+    }
+    $connection->close();
+}
+
+function deleteImages($id) {
+    $connection = get_connection();
+    $query = "DELETE FROM product_images WHERE product_id = $id";
+    if ($connection->query($query) === TRUE) {
+    } else {
+     pr("Error: " . $connection->error);
+    }
+    $connection->close();
+}
+
 function get_all_products() {
     $connection = get_connection();
 

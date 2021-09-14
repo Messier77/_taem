@@ -478,6 +478,8 @@ nav .logo img {
       -ms-flex-align: center;
           align-items: center;
   background: #000000;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
 }
 
 .footer .info-footer {

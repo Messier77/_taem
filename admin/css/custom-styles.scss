@@ -1,3 +1,8 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap");
+body {
+  font-family: 'Montserrat', sans-serif;
+}
 
 .form-group > .img-container {
     display: grid;
@@ -5,13 +10,27 @@
     text-align: center;
     height: 350px;
     width: 50%;
+    &:hover {
+        .img-icon {
+            color: rgb(203, 162, 95);
+        }
+        .img-text {
+            color: rgb(203, 162, 95);
+        }
+        .img-wrapper {
+            border: 2px dashed rgb(203, 162, 95);
+        }
+        .custom-btn {
+            background: rgb(203, 162, 95);
+        }
+    }
 }
 
 .form-group > .img-container > .img-wrapper {
     position: relative;
     height: 300px;
     width: 100%;
-    border: 2px dashed rgb(203, 162, 95);
+    border: 2px dashed rgb(51, 51, 51);
     border-radius: 10px;
     background: #FFFFFF;
     display: flex;
@@ -37,12 +56,12 @@
     }
     .img-icon {
         font-size: 100px;
-        color: rgb(203, 162, 95);
+        color: rgb(51, 51, 51);
     }
     .img-text {
         font-size: 20px;
         font-weight: 500;
-        color: #969696;
+        color: rgb(51, 51, 51);
     }
     .cancel-btn {
         position: absolute;
@@ -71,12 +90,15 @@
 
 .img-container {
     .custom-btn {
-        margin-top: 10px;
+        margin-top: 5px;
+        margin-bottom: 20px;
         width: 100%;
         height: 25px;
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         border: none;
-        background: rgb(203, 162, 95);
+        background: rgb(51, 51, 51);
         color: #FFFFFF;
         border-radius: 25px;
         font-size: 14px;
@@ -84,10 +106,17 @@
         letter-spacing: 1px;
         text-transform: uppercase;
         cursor: pointer;
+        &:hover {
+            background: rgb(203, 162, 95);
+        }
+        &:focus {
+            background: rgb(51, 51, 51);
+        }
     }
 
     .default-btn {
-        visibility: hidden;
+        // visibility: hidden;
+        display: none;
     }
 
     &.has-image {
@@ -119,3 +148,42 @@
 //     width: 100% !important;
 // }
 
+.btn-info {
+    background: rgb(51, 51, 51);
+    border: none;
+    text-transform: uppercase;
+    &:hover {
+        background: rgb(203, 162, 95);
+    }
+    &:focus {
+        background: rgb(51, 51, 51);
+    }
+    &:disabled {
+        background: rgba(203, 162, 95, 0.700);
+        &:focus {
+            background: rgb(203, 162, 95);
+        }
+    }
+}
+
+.btn-primary {
+    background: rgb(203, 162, 95);
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+    &:hover {
+        background: rgb(203, 162, 95);
+    }
+    &:focus {
+        background: rgb(203, 162, 95);
+    }
+}
+
+.sub-active {
+    background: rgb(203, 162, 95);
+}
+
+.select2-selection {
+    width: 100%;
+}

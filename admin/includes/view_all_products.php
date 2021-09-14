@@ -4,7 +4,6 @@
             <th>ID</th>
             <th>Name</th>
             <th>Title</th>
-            <th>Description</th>
             <th>Short Description</th>
             <th>Category</th>
             <th>Material</th>
@@ -66,13 +65,25 @@
 
             function isFeaturedToStatus($status) {
                 if($status == 1) {
-                    return 'Active';
+                    return 'Featured';
                 }
                 return '';
             }
-            
-            
 
+            if(isset($_GET['delete'])) {
+                $id = $_GET['delete'];
+                $existingImages = getAllProductImages($id);
+                foreach ($existingImages as $key => $image) {
+                    unlink("../images/products/" . $image['image']);
+                }
+                $current_product = getCurrentProduct($id);
+                $product_image = $current_product['featured_image'];
+                unlink("../images/products/" . $product_image);
+                deleteImages($id);
+                deleteProduct($id);
+                header("Location: products.php");
+            }
+            
             $query = "SELECT * FROM products";
             $select_products = mysqli_query($connection, $query);
     
@@ -80,7 +91,7 @@
                 $id = $row['id'];
                 $name = $row['name'];
                 $title = $row['title'];
-                $description = $row['description'];
+                // $description = $row['description'];
                 $short_description = $row['short_description'];
                 $category_id = categoryIdsToNames($row['product_categories'], $cats);
                 $material_id = materialIdsToNames($row['product_materials'], $mats);
@@ -91,14 +102,14 @@
             echo "<td>$id</td>";
             echo "<td>$name</td>";
             echo "<td>$title</td>";
-            echo "<td>$description</td>";
+            // echo "<td>$description</td>";
             echo "<td>$short_description</td>";
             echo "<td>$category_id</td>";
             echo "<td>$material_id</td>";
-            echo "<td><img style='width: 100%; max-width: 100px' src='../images/products/$featured_image'></td>";
+            echo "<td><img style='width: 100%; max-width: 100px' src='../images/products/$featured_image' alt=''></td>";
             echo "<td>$is_featured</td>";
             echo "<td><a href='./edit_product.php?id={$id}'>Edit</a></td>";
-            echo "<td>Delete</td>";
+            echo "<td><a href='products.php?delete={$id}'>Delete</td>";
             echo "</tr>";
             }
         ?>

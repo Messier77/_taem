@@ -1,3 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap");
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+
 .form-group > .img-container {
   display: -ms-grid;
   display: grid;
@@ -7,11 +13,27 @@
   width: 50%;
 }
 
+.form-group > .img-container:hover .img-icon {
+  color: #cba25f;
+}
+
+.form-group > .img-container:hover .img-text {
+  color: #cba25f;
+}
+
+.form-group > .img-container:hover .img-wrapper {
+  border: 2px dashed #cba25f;
+}
+
+.form-group > .img-container:hover .custom-btn {
+  background: #cba25f;
+}
+
 .form-group > .img-container > .img-wrapper {
   position: relative;
   height: 300px;
   width: 100%;
-  border: 2px dashed #cba25f;
+  border: 2px dashed #333333;
   border-radius: 10px;
   background: #FFFFFF;
   display: -webkit-box;
@@ -50,13 +72,13 @@
 
 .img-wrapper .img-icon {
   font-size: 100px;
-  color: #cba25f;
+  color: #333333;
 }
 
 .img-wrapper .img-text {
   font-size: 20px;
   font-weight: 500;
-  color: #969696;
+  color: #333333;
 }
 
 .img-wrapper .cancel-btn {
@@ -85,12 +107,21 @@
 }
 
 .img-container .custom-btn {
-  margin-top: 10px;
+  margin-top: 5px;
+  margin-bottom: 20px;
   width: 100%;
   height: 25px;
-  display: block;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   border: none;
-  background: #cba25f;
+  background: #333333;
   color: #FFFFFF;
   border-radius: 25px;
   font-size: 14px;
@@ -100,8 +131,16 @@
   cursor: pointer;
 }
 
+.img-container .custom-btn:hover {
+  background: #cba25f;
+}
+
+.img-container .custom-btn:focus {
+  background: #333333;
+}
+
 .img-container .default-btn {
-  visibility: hidden;
+  display: none;
 }
 
 .img-container.has-image .img-wrapper {
@@ -123,5 +162,51 @@
 .img-container.has-image .cancel-btn {
   display: block;
   color: #cba25f;
+}
+
+.btn-info {
+  background: #333333;
+  border: none;
+  text-transform: uppercase;
+}
+
+.btn-info:hover {
+  background: #cba25f;
+}
+
+.btn-info:focus {
+  background: #333333;
+}
+
+.btn-info:disabled {
+  background: rgba(203, 162, 95, 0.7);
+}
+
+.btn-info:disabled:focus {
+  background: #cba25f;
+}
+
+.btn-primary {
+  background: #cba25f;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background: #cba25f;
+}
+
+.btn-primary:focus {
+  background: #cba25f;
+}
+
+.sub-active {
+  background: #cba25f;
+}
+
+.select2-selection {
+  width: 100%;
 }
 /*# sourceMappingURL=custom-styles.css.map */

@@ -16,6 +16,7 @@
         $id = $_GET['id'];
 
         $images = getProductImages($id);
+        $mainImage = getMainImages($id);
 
 
         $product_name = $currentProduct['name'];
@@ -26,7 +27,7 @@
         $product_categories_select2 = explode(',', $product_categories);
         $product_materials = $currentProduct['product_materials'];
         $product_materials_select2 = explode(',', $product_materials);
-        $newFileName = $currentProduct['featured_image'];
+        $product_image = $currentProduct['featured_image'];
         $is_featured = $currentProduct['is_featured'];
         $youtube = $currentProduct['youtube'];
 
@@ -46,8 +47,10 @@
             $fileNameCmps = explode(".", $fileName);
             $fileExtension = strtolower(end($fileNameCmps));
 
+            $fileNameForConcat = strlen($fileNameCmps[0]) > 30 ? substr($fileNameCmps[0],0,30) : $fileNameCmps[0];
+
             // sanitize file-name
-            $newFileName = md5(time() . $fileName) . '-' . $fileNameCmps[0] . '.' . $fileExtension;
+            $newFileName = md5(time() . $fileName) . '-' . $fileNameForConcat . '.' . $fileExtension;
             // check if file has one of the following extensions
             $allowedfileExtensions = array('jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
 
@@ -111,28 +114,50 @@
             $errors['product_materials'] = 'Please select a material!';
         }
 
-        if(!empty($_POST['is_featured'])) {
-            $is_featured = $_POST['is_featured'];
-        }
+        $is_featured = $_POST['is_featured'];
 
         $youtube = $_POST['youtube'];
         if(strlen($youtube) > 150) {
             $errors['youtube'] = 'YouTube URL must be less than 150 characters!';
         }
 
-        if (isset($_FILES['featured_image'])) {
-            $newFileName = uploadImageAndGetPath($_FILES['featured_image']);
+        if ($_POST['should_delete_featured_image'] == 1) {
+            unlink("../images/products/" . $product_image);
+            $product_image = '';
+        }
+        
+        if ($_FILES['featured_image']['name'] != '' && $_POST['should_delete_featured_image'] == 0) {
+            if (strlen($product_image) > 1) {
+                unlink("../images/products/" . $product_image);
+            }
+            $product_image = uploadImageAndGetPath($_FILES['featured_image']);
         }
 
         if(empty($errors)) {
-            update_product($currentProduct['id'], $product_name, $product_title, $product_description, $product_short_description, $product_categories, $product_materials, $newFileName, $is_featured, $youtube);
-            // $productId = json_decode(selectLastAddedProduct())[0]->id;
-            if($_FILES['main_image']) {
+            update_product($currentProduct['id'], $product_name, $product_title, $product_description, $product_short_description, $product_categories, $product_materials, $product_image, $is_featured, $youtube);
+
+            if ($_POST['should_delete_main_image'] == 1) {
+                unlink("../images/products/" . $mainImage[0]['image']);
+            }
+            
+            if ($_FILES['main_image']['name'] != '' && $_POST['should_delete_main_image'] == 0) {
+                
                 $image = uploadImageAndGetPath($_FILES['main_image']);
                 // insertProductImage($productId, $image, 1);
+                if(isset($mainImage[0]['image'])) {
+                    unlink("../images/products/" . $mainImage[0]['image']);
+                    updateProductImage($mainImage[0]['id'], $image);
+                } else {
+                    insertProductImage($mainImage[0]['id'], $image, 1);
+                }
+                
             }
             for($i = 1; $i < 7; $i++) {
-                if(isset($_FILES['other_image_' . $i])) {
+                if ($_POST['should_delete_other_image_' . $i] == 1) {
+                    unlink("../images/products/" . $product_images[$i - 1]['image']);
+                }
+
+                if($_FILES['other_image_' . $i]['name'] != '' && $_POST['should_delete_other_image_' . $i] == 0) {
                     $image = uploadImageAndGetPath($_FILES['other_image_' . $i]);
                     if($image != null){
 
@@ -141,18 +166,12 @@
                             
                         } else {
                             insertProductImage($_GET['id'], $image, 0);
-                        }
-
-                        
+                        }   
                     }
-
-
                 }  
             }
-
+            header("Location: edit_product.php?id=" . $_GET['id']);
             $success_message = "It worked";
-
-            header('Location: edit_product.php?id='.$_GET['id']);
         } 
     }
 ?>
@@ -247,8 +266,8 @@
                                 <div class="form-group">
                                     <label>Featured</label>
                                     <select name="is_featured" class="form-control">
-                                        <option value="1">Yes</option>
-                                        <option value="0">No</option>
+                                        <option value="1" <?php echo $is_featured == 1 ? 'selected' : ''?>>Yes</option>
+                                        <option value="0" <?php echo $is_featured == 0 ? 'selected' : ''?>>No</option>
                                     </select>
                                 </div>
 
@@ -258,16 +277,44 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="featured_image">Featured image (Home and Work pages)</label>
-                                    <input type="file" id="featured_image" name="featured_image"> 
-                                    <p class="help-block">Upload feature image.</p>
-                                    <img src="../images/products/<?php echo $newFileName; ?>" alt="">
+                                    <input type="hidden" name="should_delete_featured_image" value="0" />
+
+                                    <div class="img-container col-xs-12 col-m-6 <?php echo strlen($product_image) > 1 ? 'has-image' : ''; ?>">
+                                        <div class="img-wrapper">
+                                            <div class="img-image">
+                                                <img class="img-img <?php echo strlen($product_image) < 1 ? 'display-none' : ''; ?>" 
+                                                    src="<?php echo strlen($product_image) > 2 ? '../images/products/' . $product_image : ''; ?>" alt="">
+                                            </div>
+                                            <div class="img-content">
+                                                <div class="img-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                                <div class="img-text">No file chosen, yet!</div>
+                                            </div>
+                                            <div class="cancel-btn" data-image-name="featured_image"><i class="fas fa-times"></i></div>
+                                            <div class="file-name"></div>
+                                        </div>
+                                        <input id="featured_image" type="file" name="featured_image" class="default-btn">
+                                        <label for="featured_image" id="custom-btn" class="custom-btn">FEATURED IMAGE</label>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="main_image">Main image (Product page)</label>
-                                    <input type="file" id="main_image" name="main_image"> 
-                                    <p class="help-block">Upload main image.</p>
+                                    <input type="hidden" name="should_delete_main_image" value="0" />
+                                    <div class="img-container col-xs-12 col-m-6 <?php echo strlen($mainImage[0]['image']) > 1 ? 'has-image' : ''; ?>">
+                                        <div class="img-wrapper">
+                                            <div class="img-image">
+                                                <img class="img-img <?php echo strlen($mainImage[0]['image']) < 1 ? 'display-none' : ''; ?>" 
+                                                    src="../images/products/<?php echo $mainImage[0]['image']; ?>" alt="">
+                                            </div>
+                                            <div class="img-content">
+                                                <div class="img-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                                <div class="img-text">No file chosen, yet!</div>
+                                            </div>
+                                            <div class="cancel-btn" data-image-name="main_image"><i class="fas fa-times"></i></div>
+                                            <div class="file-name"></div>
+                                        </div>
+                                        <input id="main_image" type="file" name="main_image" class="default-btn">
+                                        <label for="main_image" id="custom-btn" class="custom-btn">MAIN IMAGE</label>
+                                    </div>
                                 </div>
 
                                 <div id="images" class="images">
@@ -277,23 +324,35 @@
                                         <?php $idx = $key + 1; ?>
 
                                         <div class="form-group">
-                                            <label for="product_picture_<?php echo $idx; ?>">Picture <?php echo $idx; ?></label>
-                                            <input type="file" id="product_picture_<?php echo $idx; ?>" name="other_image_<?php echo $idx; ?>"> 
-                                            <p class="help-block">Upload image <?php echo $idx; ?></p>
-                                            <img src="../images/products/<?php echo $image['image']; ?>" alt="">
+                                            <input type="hidden" name="should_delete_other_image_<?php echo $idx; ?>" value="0" />
+                                            <div class="img-container col-xs-12 col-m-6 <?php echo strlen($image['image']) > 1 ? 'has-image' : ''; ?>">
+                                                <div class="img-wrapper">
+                                                    <div class="img-image">
+                                                        <img class="img-img <?php echo strlen($image['image']) < 1 ? 'display-none' : ''; ?>" 
+                                                        alt="" src="../images/products/<?php echo $image['image']; ?>">
+                                                    </div>
+                                                    <div class="img-content">
+                                                        <div class="img-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                                        <div class="img-text">No file chosen, yet!</div>
+                                                    </div>
+                                                    <div id="cancel-btn" data-image-name="other_image_<?php echo $idx; ?>" class="cancel-btn"><i class="fas fa-times"></i></div>
+                                                    <div class="file-name"></div>
+                                                </div>
+                                                <input id="other_image_<?php echo $idx; ?>" type="file" name="other_image_<?php echo $idx; ?>" class="default-btn">
+                                                <label for="other_image_<?php echo $idx; ?>" id="custom-btn" class="custom-btn">Picture <?php echo $idx; ?></label>
+                                            </div>
                                         </div>
 
                                     <?php endforeach; ?>
 
+                                </div>    
+
+                                <div class="col-xs-12" style="padding-left: 0px; margin-bottom: 15px;">
+                                    <button id="add-image" type="button" class="btn btn-info col-xs-6">Add Image</button>
                                 </div>
-                                <br>
-                                <button id="add-image" type="button" class="btn btn-primary">Add Image</button>
-
-                                
-
 
                                 <div class="form-group">
-                                    <input class="btn btn-primary" type="submit" name="submit" value="Update Product">
+                                    <input class="btn btn-primary col-xs-12" type="submit" name="submit" value="Update Product">
                                 </div>
                             </form>
                         </div>
@@ -318,24 +377,68 @@
             let currentImageIndex = <?php echo count($images) + 1; ?>;
             let maxIndex = 6;
 
+
             $('#add-image').on('click', function(e) {
 
-                e.preventDefault();
+            e.preventDefault();
 
-                if (currentImageIndex > maxIndex) {
-                    return false;
-                }
-                $("#images").append(`<div class="form-group col-xs-6">
-                                    <label for="product_picture_${currentImageIndex}">Picture ${currentImageIndex}</label>
-                                    <input type="file" id="product_picture_${currentImageIndex}" name="other_image_${currentImageIndex}"> 
-                                    <p class="help-block">Upload image ${currentImageIndex}</p>
+            if (currentImageIndex > maxIndex) {
+                return false;
+            } 
+            $("#images").append(`<div class="form-group">
+                                    <div class="img-container col-xs-12 col-m-6">
+                                        <div class="img-wrapper">
+                                            <div class="img-image">
+                                                <img class="img-img display-none" src="" alt="">
+                                            </div>
+                                            <div class="img-content">
+                                                <div class="img-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                                <div class="img-text">No file chosen, yet!</div>
+                                            </div>
+                                            <div id="cancel-btn" class="cancel-btn"><i class="fas fa-times"></i></div>
+                                            <div class="file-name"></div>
+                                        </div>
+                                        <input id="other_image_${currentImageIndex}" type="file" name="other_image_${currentImageIndex}" class="default-btn">
+                                        <label for="other_image_${currentImageIndex}" id="custom-btn" class="custom-btn">Picture ${currentImageIndex}</label>
+                                    </div>
                                 </div>`);
 
                 if (currentImageIndex == maxIndex) {
                     $('#add-image').prop('disabled', true);
                 }
-                currentImageIndex++;
+            currentImageIndex++;
+            });
 
+            $('#page-wrapper').on('change', '.default-btn', function(e){
+                let file = e.target.files[0];
+                let imgContainer = $(this).parent();
+                let cancelBtn = imgContainer.find(".cancel-btn");
+                imgContainer.find(".img-img").attr('src', URL.createObjectURL(file));
+                imgContainer.addClass("has-image");
+
+                imgContainer.find('.file-name').html(file.name);
+
+
+                let currentImageName = cancelBtn.attr('data-image-name');
+                let shouldDeleteField = $(`[name='should_delete_${currentImageName}']`);
+                shouldDeleteField.val('0');
+                console.log(currentImageName);
+                console.log(shouldDeleteField);
+
+
+                cancelBtn.on('click', function(ev){
+                    imgContainer.removeClass("has-image");
+                    imgContainer.find(".img-img").attr('src', '');
+                });
+            });
+
+            $('#page-wrapper').on('click', '.cancel-btn', function(e){
+                let imgContainer = $(this).parent();
+                imgContainer.find(".img-img").attr('src', '').addClass("display-none");
+                $(this).parent().parent().removeClass("has-image");
+                let currentImageName = $(this).attr('data-image-name');
+                let shouldDeleteField = $(`[name='should_delete_${currentImageName}']`);
+                shouldDeleteField.val('1');
             });
         });
 </script>
