@@ -12,8 +12,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Trial and Error Makers
-                            <small>Admin</small>
+                            Materials
                         </h1>
 
                         <!-- Add material form -->

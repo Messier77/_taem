@@ -76,7 +76,7 @@
             ?>
 
             <!-- Single project -->
-            <a href="#">
+            <a href="./project/project.php?product=<?php echo $product_id ?>" class="all-projects">
                 <div class="project">
                     <img src="./images/products/<?php echo $featured_image ?>" alt="" class="project-img" />
                     <div class="project-info">

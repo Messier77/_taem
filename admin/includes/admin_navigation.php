@@ -17,7 +17,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="">TAEM Admin</a>
+                <a class="navbar-brand" href="products.php">TAEM Admin</a>
                 <a class="navbar-brand" href="../">TAEM Main Site</a>
             </div>
 

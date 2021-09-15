@@ -100,6 +100,16 @@ function deleteImages($id) {
     $connection->close();
 }
 
+function deleteSingleImage($id, $image) {
+    $connection = get_connection();
+    $query = "DELETE FROM product_images WHERE product_id = $id AND image = '$image'";
+    if ($connection->query($query) === TRUE) {
+    } else {
+     pr("Error: " . $connection->error);
+    }
+    $connection->close();
+}
+
 function get_all_products() {
     $connection = get_connection();
 

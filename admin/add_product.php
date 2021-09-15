@@ -151,8 +151,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Trial and Error Makers
-                            <small>Admin</small>
+                            Adding a product
                         </h1>
 
                         <!-- Add product form -->
@@ -303,7 +302,7 @@
                                 <div class="col-xs-12" style="padding-left: 0px; margin-bottom: 15px;">
                                     <button id="add-image" type="button" class="btn btn-info col-xs-6">Add Image</button>
                                 </div>
-=
+
                                 <div class="form-group">
                                     <input class="btn btn-primary col-xs-12" type="submit" name="submit" value="Add Product">
                                 </div>
@@ -373,6 +372,16 @@
                 cancelBtn.on('click', function(ev){
                     imgContainer.removeClass("has-image");
                 });
+            });
+
+            $('#page-wrapper').on('click', '.cancel-btn', function(e){
+                let imgContainer = $(this).parent();
+                imgContainer.find(".img-img").attr('src', '').addClass("display-none");
+                $(this).parent().parent().removeClass("has-image");
+                imgContainer.find("input").val("");
+                // let currentImageName = $(this).attr('data-image-name');
+                // let shouldDeleteField = $(`[name='should_delete_${currentImageName}']`);
+                // shouldDeleteField.val('1');
             });
         });
 

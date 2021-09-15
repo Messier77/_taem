@@ -17,6 +17,14 @@
 
         $images = getProductImages($id);
         $mainImage = getMainImages($id);
+        $main_image = '';
+        $main_image_id = '';
+
+
+        if(count($mainImage) > 0) {
+            $main_image = $mainImage[0]['image'];
+            $main_image_id = $mainImage[0]['id'];
+        }
 
 
         $product_name = $currentProduct['name'];
@@ -137,24 +145,26 @@
             update_product($currentProduct['id'], $product_name, $product_title, $product_description, $product_short_description, $product_categories, $product_materials, $product_image, $is_featured, $youtube);
 
             if ($_POST['should_delete_main_image'] == 1) {
-                unlink("../images/products/" . $mainImage[0]['image']);
+                unlink("../images/products/" . $main_image);
+                deleteSingleImage($_GET['id'], $main_image); 
             }
             
             if ($_FILES['main_image']['name'] != '' && $_POST['should_delete_main_image'] == 0) {
                 
                 $image = uploadImageAndGetPath($_FILES['main_image']);
-                // insertProductImage($productId, $image, 1);
-                if(isset($mainImage[0]['image'])) {
-                    unlink("../images/products/" . $mainImage[0]['image']);
-                    updateProductImage($mainImage[0]['id'], $image);
+                if(strlen($main_image) > 1) {
+                    unlink("../images/products/" . $main_image);
+                    // deleteSingleImage($_GET['id'], $main_image);
+                    updateProductImage($main_image_id, $image);
                 } else {
-                    insertProductImage($mainImage[0]['id'], $image, 1);
+                    insertProductImage($_GET['id'], $image, 1);
                 }
                 
             }
             for($i = 1; $i < 7; $i++) {
                 if ($_POST['should_delete_other_image_' . $i] == 1) {
                     unlink("../images/products/" . $product_images[$i - 1]['image']);
+                    deleteSingleImage($_GET['id'], $product_images[$i - 1]['image']);
                 }
 
                 if($_FILES['other_image_' . $i]['name'] != '' && $_POST['should_delete_other_image_' . $i] == 0) {
@@ -189,8 +199,8 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Trial and Error Makers
-                            <small>Admin</small>
+                            Editing product: 
+                            <small><?php echo $product_name; ?></small>
                         </h1>
 
                         <!-- Add product form -->
@@ -299,11 +309,11 @@
 
                                 <div class="form-group">
                                     <input type="hidden" name="should_delete_main_image" value="0" />
-                                    <div class="img-container col-xs-12 col-m-6 <?php echo strlen($mainImage[0]['image']) > 1 ? 'has-image' : ''; ?>">
+                                    <div class="img-container col-xs-12 col-m-6 <?php echo strlen($main_image) > 1 ? 'has-image' : ''; ?>">
                                         <div class="img-wrapper">
                                             <div class="img-image">
-                                                <img class="img-img <?php echo strlen($mainImage[0]['image']) < 1 ? 'display-none' : ''; ?>" 
-                                                    src="../images/products/<?php echo $mainImage[0]['image']; ?>" alt="">
+                                                <img class="img-img <?php echo strlen($main_image) < 1 ? 'display-none' : ''; ?>" 
+                                                    src="../images/products/<?php echo $main_image; ?>" alt="">
                                             </div>
                                             <div class="img-content">
                                                 <div class="img-icon"><i class="fas fa-cloud-upload-alt"></i></div>
