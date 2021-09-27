@@ -1,39 +1,16 @@
-<form action="" method="post">
-    <div class="form-group">
-        <label for="material_name">Edit Material</label>
+<?php include "../../includes/db.php";?>
 
-        <?php
-        if(isset($_GET['edit'])) {
-            $material_id = $_GET['edit'];
+<?php
 
-        $query = "SELECT * FROM materials WHERE id = $material_id";
-        $select_materials_id = mysqli_query($connection, $query);
+        if (isset($_POST['name']) && $_POST['id']) {
 
-        while($row = mysqli_fetch_assoc($select_materials_id)) {
-            $material_id = $row['id'];
-            $material_name = $row['name'];
-        ?>
+            $name = $_POST['name'];
+            $id = $_POST['id'];
 
-        <input value="<?php if(isset($material_name)){echo $material_name;} ?>" class="form-control" type="text" name="material_name">
-
-        <?php }} ?>
-
-        <?php
-        // UPDATE QUERY
-        if(isset($_POST['update_material'])) {
-            $the_material_name = $_POST['material_name'];
-            $query = "UPDATE materials SET name = '{$the_material_name}' WHERE id = {$material_id} ";
-            $update_query = mysqli_query($connection, $query);
-
-            if (!$update_query) {
-                die("QUERY FAILED" . mysqli_error($connection));
-            }
-            header("Location: materials.php");
+            updateMaterials($id, $name);
+            
+            echo json_encode(array('success' => 1));
+        } else {
+            echo json_encode(array('success' => 0));
         }
-        ?>
-
-    </div>
-    <div class="form-group">
-        <input class="btn btn-primary" type="submit" name="update_material" value="Update Material">
-    </div>
-</form>
+?>

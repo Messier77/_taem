@@ -17,9 +17,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="products.php">TAEM Admin</a>
+                <a class="navbar-brand" href="index">TAEM Admin</a>
                 <a class="navbar-brand" href="../">TAEM Main Site</a>
             </div>
+
+            <ul class="nav navbar-right top-nav">
+                <li class="dropdown">
+                    <a href="logout"></i>Log out</a>
+                </li>
+            </ul>
 
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -27,19 +33,22 @@
                     <li>
                         <a href="javascript:;" data-toggle="collapse" data-target="#posts-dropdown" aria-expanded="true"><i class="fa fa-fw fa-cubes"></i> Products <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="posts-dropdown" class="collapse in" aria-expanded="true">
-                            <li class="<?php echo getPageName() == "products.php" ? "sub-active" : "" ?>">
-                                <a href="./products.php">View All Products</a>
+                            <li class="<?php echo getPageName() == "products" ? "sub-active" : "" ?>">
+                                <a href="./products">View All Products</a>
                             </li>
-                            <li class="<?php echo getPageName() == "add_product.php" ? "sub-active" : "" ?>">
-                                <a href="./add_product.php">Add Product</a>
+                            <li class="<?php echo getPageName() == "add_product" ? "sub-active" : "" ?>">
+                                <a href="./add_product">Add Product</a>
                             </li>
                         </ul>
                     </li>
-                    <li class="<?php echo getPageName() == "categories.php" ? "active" : "" ?>">
-                        <a href="categories.php"><i class="fa fa-fw fa-wrench"></i> Categories</a>
+                    <li class="<?php echo getPageName() == "categories" ? "sub-active" : "" ?>">
+                        <a href="categories" class="text-white"><i class="fa fa-fw fa-wrench"></i> Categories</a>
                     </li>
-                    <li class="<?php echo getPageName() == "materials.php" ? "active" : "" ?>">
-                        <a href="materials.php"><i class="fa fa-fw fa-book"></i> Materials</a>
+                    <li class="<?php echo getPageName() == "materials" ? "sub-active" : "" ?>">
+                        <a href="materials"><i class="fa fa-fw fa-book"></i> Materials</a>
+                    </li>
+                    <li class="<?php echo getPageName() == "messages" ? "sub-active" : "" ?>">
+                        <a href="messages"><i class="fa fa-fw fa-envelope"></i> Messages</a>
                     </li>
                 </ul>
             </div>

@@ -91,6 +91,14 @@ body {
   display: none;
 }
 
+.img-wrapper .cancel-btn i {
+  color: #cba25f;
+}
+
+.img-wrapper .cancel-btn i:hover {
+  color: #969696;
+}
+
 .img-wrapper .file-name {
   position: absolute;
   bottom: 0px;
@@ -202,11 +210,75 @@ body {
   background: #cba25f;
 }
 
+.btn-secondary {
+  color: #FFFFFF;
+  background: #cba25f;
+  border: none;
+  letter-spacing: 1px;
+}
+
+.btn-secondary:hover {
+  color: #FFFFFF;
+  background: rgba(203, 162, 95, 0.7);
+}
+
+.btn-secondary:focus {
+  color: #FFFFFF;
+  background: rgba(203, 162, 95, 0.7);
+}
+
+.btn-danger {
+  color: #FFFFFF;
+  background: #d9534f;
+  border: none;
+  letter-spacing: 1px;
+}
+
+.btn-danger:hover {
+  background: #d9544fbb;
+}
+
+.btn-danger:focus {
+  background: #d9544fbb;
+}
+
 .sub-active {
   background: #cba25f;
 }
 
-.select2-selection {
-  width: 100%;
+.sub-active a {
+  color: #FFFFFF !important;
+}
+
+.active {
+  background: #cba25f;
+}
+
+.select2-search.select2-search--inline {
+  display: none;
+}
+
+.text-white {
+  color: #FFFFFF;
+}
+
+.button-margin-top {
+  margin-top: 30px;
+}
+
+.action-buttons {
+  width: 160px;
+}
+
+.action-buttons-messages {
+  width: 225px;
+}
+
+.unread {
+  background: #ebebeb;
+}
+
+.read {
+  background: none;
 }
 /*# sourceMappingURL=custom-styles.css.map */

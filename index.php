@@ -17,25 +17,25 @@
         <!-- Social icons in the header -->
         <div class="social-header">
             <ul>
-                <li><a href="#"><img src="./images/icons/youtube-icon.svg" alt=""></a></li>
-                <li><a href="#"><img src="./images/icons/facebook-icon.svg" alt=""></a></li>
-                <li><a href="#"><img src="./images/icons/instagram-icon.svg" alt=""></a></li>
-                <li><a href="#"><img src="./images/icons/twitter-icon.svg" alt=""></a></li>
-                <li class="header-icon-mobile"><a href="#"><img src="./images/icons/youtube-icon-header-mobile.svg" alt=""></a></li>
+                <li><a href="https://www.youtube.com/c/TrialandErrorMakers" target="_blank"><img src="./images/icons/youtube-icon.svg" alt=""></a></li>
+                <li><a href="https://www.facebook.com/TrialAndErrorMakers/" target="_blank"><img src="./images/icons/facebook-icon.svg" alt=""></a></li>
+                <li><a href="https://www.instagram.com/trialanderrormakers/" target="_blank"><img src="./images/icons/instagram-icon.svg" alt=""></a></li>
+                <li><a href="https://twitter.com/taemakers/" target="_blank"><img src="./images/icons/twitter-icon.svg" alt=""></a></li>
+                <li class="header-icon-mobile"><a href="https://www.youtube.com/c/TrialandErrorMakers" target="_blank"><img src="./images/icons/youtube-icon-header-mobile.svg" alt=""></a></li>
             </ul>
         </div>
 
         <!-- Logo -->
         <div class="logo">
-            <a href="#"><img src="./images/icons/Logo-and-bg.svg" alt=""></a>
+            <a href="./"><img src="./images/icons/Logo-and-bg.svg" alt=""></a>
         </div>
 
         <!-- Navigation menu -->
         <div class="nav-menu">
             <ul>
-                <li><a href="./work/work.php">Work</a></li>
-                <li><a href="#">YouTube Channel</a></li>
-                <li><a href="./contact/contact.php">Meet us</a></li>
+                <li><a href="./work.php">Work</a></li>
+                <li><a href="https://www.youtube.com/c/TrialandErrorMakers" target="_blank">YouTube Channel</a></li>
+                <li><a href="./contact.php">Meet us</a></li>
                 <li class="header-icon-mobile burger-toggle"><img src="./images/icons/burger-menu.svg" alt=""></li>
                 <li class="header-icon-mobile burger-toggle" id="burger-close"><img src="./images/icons/burger-menu-close.svg" alt=""></li>
             </ul>
@@ -43,16 +43,16 @@
     </nav>
     <div class="mobile-nav inactive-menu">
         <ul>
-            <li><a href="./work/work.php">Work</a></li>
-            <li><a href="#">YouTube Channel</a></li>
-            <li><a href="./contact/contact.php">Meet us</a></li>
+            <li><a href="./work.php">Work</a></li>
+            <li><a href="https://www.youtube.com/c/TrialandErrorMakers" target="_blank">YouTube Channel</a></li>
+            <li><a href="./contact.php">Meet us</a></li>
         </ul>
 
         <ul class="burger-social">
-            <li><a href="#"><img src="./images/icons/youtube-icon.svg" alt=""></a></li>
-            <li><a href="#"><img src="./images/icons/facebook-icon.svg" alt=""></a></li>
-            <li><a href="#"><img src="./images/icons/instagram-icon.svg" alt=""></a></li>
-            <li><a href="#"><img src="./images/icons/twitter-icon.svg" alt=""></a></li>
+            <li><a href="https://www.youtube.com/c/TrialandErrorMakers" target="_blank"><img src="./images/icons/youtube-icon.svg" alt=""></a></li>
+            <li><a href="https://www.facebook.com/TrialAndErrorMakers/" target="_blank"><img src="./images/icons/facebook-icon.svg" alt=""></a></li>
+            <li><a href="https://www.instagram.com/trialanderrormakers/" target="_blank"><img src="./images/icons/instagram-icon.svg" alt=""></a></li>
+            <li><a href="https://twitter.com/taemakers/" target="_blank"><img src="./images/icons/twitter-icon.svg" alt=""></a></li>
         </ul>
     </div>
 
@@ -76,9 +76,19 @@
             ?>
 
             <!-- Single project -->
-            <a href="./project/project.php?product=<?php echo $product_id ?>" class="all-projects">
+            <a href="./project.php?product=<?php echo $product_id ?>" class="all-projects">
                 <div class="project">
-                    <img src="./images/products/<?php echo $featured_image ?>" alt="" class="project-img" />
+
+
+                    <?php if(strlen($featured_image) < 1) : ?>
+                        <img src="./images/contact/default.jpg" alt="" class="project-img" />
+                    <?php endif; ?>
+
+                    <?php if(strlen($featured_image) > 1) : ?>
+                        <img src="./images/products/<?php echo $featured_image ?>" alt="" class="project-img" />
+                    <?php endif; ?>
+
+
                     <div class="project-info">
                         <h4><?php echo $product_name ?></h4>
                         <p><?php echo $product_short_description ?></p>
@@ -99,15 +109,15 @@
         </div>
 
         <div class="footer-logo">
-            <a href="#"><img src="./images/icons//Footer-logo.svg" alt=""></a>
+            <a href="./"><img src="./images/icons//Footer-logo.svg" alt=""></a>
         </div>
 
         <div class="social-footer">
             <ul>
-                <li><a href="#"><img src="./images/icons/youtube-icon-white.svg" alt=""></a></li>
-                <li><a href="#"><img src="./images/icons/facebook-icon-white.svg" alt=""></a></li>
-                <li><a href="#"><img src="./images/icons/instagram-icon-white.svg" alt=""></a></li>
-                <li><a href="#"><img src="./images/icons/twitter-icon-white.svg" alt=""></a></li>
+                <li><a href="https://www.youtube.com/c/TrialandErrorMakers" target="_blank"><img src="./images/icons/youtube-icon-white.svg" alt=""></a></li>
+                <li><a href="https://www.facebook.com/TrialAndErrorMakers/" target="_blank"><img src="./images/icons/facebook-icon-white.svg" alt=""></a></li>
+                <li><a href="https://www.instagram.com/trialanderrormakers/" target="_blank"><img src="./images/icons/instagram-icon-white.svg" alt=""></a></li>
+                <li><a href="https://twitter.com/taemakers/" target="_blank"><img src="./images/icons/twitter-icon-white.svg" alt=""></a></li>
             </ul>
         </div>
     </div>

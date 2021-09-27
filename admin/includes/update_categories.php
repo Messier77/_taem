@@ -1,39 +1,16 @@
-<form action="" method="post">
-    <div class="form-group">
-        <label for="category_name">Edit Category</label>
+<?php include "../../includes/db.php";?>
 
-        <?php
-        if(isset($_GET['edit'])) {
-            $category_id = $_GET['edit'];
+<?php
 
-        $query = "SELECT * FROM categories WHERE id = $category_id";
-        $select_categories_id = mysqli_query($connection, $query);
+        if (isset($_POST['name']) && $_POST['id']) {
 
-        while($row = mysqli_fetch_assoc($select_categories_id)) {
-            $category_id = $row['id'];
-            $category_name = $row['name'];
-        ?>
+            $name = $_POST['name'];
+            $id = $_POST['id'];
 
-        <input value="<?php if(isset($category_name)){echo $category_name;} ?>" class="form-control" type="text" name="category_name">
-
-        <?php }} ?>
-
-        <?php
-        // UPDATE QUERY
-        if(isset($_POST['update_category'])) {
-            $the_category_name = $_POST['category_name'];
-            $query = "UPDATE categories SET name = '{$the_category_name}' WHERE id = {$category_id} ";
-            $update_query = mysqli_query($connection, $query);
-
-            if (!$update_query) {
-                die("QUERY FAILED" . mysqli_error($connection));
-            }
-            header("Location: categories.php");
+            updateCategories($id, $name);
+            
+            echo json_encode(array('success' => 1));
+        } else {
+            echo json_encode(array('success' => 0));
         }
-        ?>
-
-    </div>
-    <div class="form-group">
-        <input class="btn btn-primary" type="submit" name="update_category" value="Update Category">
-    </div>
-</form>
+?>

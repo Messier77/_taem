@@ -71,6 +71,12 @@ body {
         cursor: pointer;
         color: #969696;
         display: none;
+        i {
+            color: rgb(203, 162, 95);
+            &:hover {
+                color: #969696;
+            }
+        }
     }
     .file-name {
         position: absolute;
@@ -180,10 +186,73 @@ body {
     }
 }
 
+.btn-secondary {
+    color: #FFFFFF;
+    background: rgb(203, 162, 95);
+    border: none;
+    letter-spacing: 1px;
+    &:hover {
+        color: #FFFFFF;
+        background: rgba(203, 162, 95, 0.7);
+    }
+    &:focus {
+        color: #FFFFFF;
+        background: rgba(203, 162, 95, 0.7);
+    }
+}
+
+.btn-danger {
+    color: #FFFFFF;
+    background: #d9534f;
+    border: none;
+    letter-spacing: 1px;
+    &:hover {
+        background: #d9544fbb;
+    }
+    &:focus {
+        background: #d9544fbb;
+    }
+}
+
 .sub-active {
+    background: rgb(203, 162, 95);
+    a {
+        color: #FFFFFF !important;
+    }
+}
+
+.active {
     background: rgb(203, 162, 95);
 }
 
-.select2-selection {
-    width: 100%;
+// .select2-selection {
+//     width: 100%;
+// }
+
+.select2-search.select2-search--inline {
+    display: none;
+}
+
+.text-white {
+    color: #FFFFFF;
+}
+
+.button-margin-top {
+    margin-top: 30px;
+}
+
+.action-buttons {
+    width: 160px;
+
+}
+.action-buttons-messages {
+    width: 225px;
+}
+
+.unread {
+    background: #ebebeb;
+}
+
+.read{
+    background: none;
 }

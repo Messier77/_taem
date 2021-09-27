@@ -1,5 +1,12 @@
 <?php include "./includes/admin_header.php";?>
 <?php
+
+session_start(); 
+
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+}
+
         $query = "SELECT * FROM categories";
         $select_all_categories_query = mysqli_query($connection, $query);
         $categories = mysqli_fetch_all($select_all_categories_query, MYSQLI_ASSOC);
@@ -40,7 +47,7 @@
             $fileNameForConcat = strlen($fileNameCmps[0]) > 30 ? substr($fileNameCmps[0],0,30) : $fileNameCmps[0];
 
             // sanitize file-name
-            $newFileName = md5(time() . $fileName) . '-' . $fileNameForConcat . '.' . $fileExtension;
+            $newFileName = md5(microtime() . $fileName) . '-' . $fileNameForConcat . '.' . $fileExtension;
             // check if file has one of the following extensions
             $allowedfileExtensions = array('jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
 
@@ -92,6 +99,7 @@
 
         if(!empty($_POST['category'])) {
             $product_categories = implode(',', $_POST['category']);
+            $product_categories_select2 = $_POST['category'];
         }
         if(empty($_POST['category'])) {
             $errors['product_categories'] = 'Please select a category!';
@@ -99,6 +107,7 @@
 
         if(!empty($_POST['material'])) {
             $product_materials = implode(',', $_POST['material']);
+            $product_materials_select2 = $_POST['material'];
         }
         if(empty($_POST['material'])) {
             $errors['product_materials'] = 'Please select a material!';
@@ -120,6 +129,11 @@
         if(empty($errors)) {
             insert_product($product_name, $product_title, $product_description, $product_short_description, $product_categories, $product_materials, $newFileName, $is_featured, $youtube);
             $productId = json_decode(selectLastAddedProduct())[0]->id;
+
+            foreach ($_POST['category'] as $key => $category_id) {
+                insertProductCategory($productId, $category_id);
+            }
+
             if($_FILES['main_image']) {
                 $image = uploadImageAndGetPath($_FILES['main_image']);
                 insertProductImage($productId, $image, 1);
@@ -133,7 +147,10 @@
                 }  
             }
             $success_message = "It worked";
-            header("Location: products.php");
+
+            $_SESSION['success_message'] = 'Product successfully added';
+            
+            header("Location: products");
         } 
     }
 ?>
@@ -164,7 +181,7 @@
                             <form action="" method="post" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label for="product_name">Product name</label>
-                                    <input class="form-control" type="text" name="product_name" value="<?php echo(isset($product_name) ? $product_name :''); ?>">
+                                    <input class="form-control" type="text" autocomplete="off" name="product_name" value="<?php echo(isset($product_name) ? $product_name :''); ?>">
 
                                     <?php if(isset($errors['product_name'])): ?>
                                     <p class="text-danger"><?php echo($errors['product_name']); ?></p>
@@ -173,7 +190,7 @@
 
                                 <div class="form-group">
                                     <label for="product_title">Product title</label>
-                                    <input class="form-control" type="text" name="product_title" value="<?php echo(isset($product_title) ? $product_title :''); ?>">
+                                    <input class="form-control" type="text" autocomplete="off" name="product_title" value="<?php echo(isset($product_title) ? $product_title :''); ?>">
 
                                     <?php if(isset($errors['product_title'])): ?>
                                     <p class="text-danger"><?php echo($errors['product_title']); ?></p>
@@ -182,7 +199,7 @@
 
                                 <div class="form-group">
                                     <label for="product_description">Product description</label>
-                                    <textarea style="resize:none" rows=10 class="form-control" type="text" name="product_description"><?php echo(isset($product_description) ? $product_description :''); ?></textarea>
+                                    <textarea style="resize:none" rows=10 class="form-control" type="text" autocomplete="off" name="product_description"><?php echo(isset($product_description) ? $product_description :''); ?></textarea>
 
                                     <?php if(isset($errors['product_description'])): ?>
                                     <p class="text-danger"><?php echo($errors['product_description']); ?></p>
@@ -191,7 +208,7 @@
 
                                 <div class="form-group">
                                     <label for="product_short_description">Product short description</label>
-                                    <input class="form-control" type="text" name="product_short_description" value="<?php echo(isset($product_short_description) ? $product_short_description :''); ?>">
+                                    <input class="form-control" type="text" autocomplete="off" name="product_short_description" value="<?php echo(isset($product_short_description) ? $product_short_description :''); ?>">
 
                                     <?php if(isset($errors['product_short_description'])): ?>
                                     <p class="text-danger"><?php echo($errors['product_short_description']); ?></p>
@@ -213,9 +230,9 @@
 
                                 <div class="form-group">
                                     <label>Materials</label>
-                                    <select name="material[]" multiple="multiple" class="js-example-basic-multiple js-states form-control js-example-basic-hide-search-multi" value="<?php echo(isset($product_materials) ? $product_materials :''); ?>">
+                                    <select name="material[]" multiple="multiple" class="js-example-basic-multiple js-states form-control js-example-basic-hide-search-multi" value="<?php echo $product_materials_select2; ?>">
                                         <?php foreach($materials as $key => $material ): ?>
-                                            <option value="<?php echo $material['id']; ?>"> <?php echo $material['name']; ?> </option>
+                                            <option <?php echo in_array($material['id'], $product_materials_select2) ? 'selected' : ''?> value="<?php echo $material['id']; ?>"> <?php echo $material['name']; ?> </option>
                                         <?php endforeach; ?>
                                     </select>
 
@@ -234,7 +251,7 @@
 
                                 <div class="form-group">
                                     <label for="youtube">YouTube URL</label>
-                                    <input class="form-control" type="text" name="youtube" value="<?php echo(isset($youtube) ? $youtube :''); ?>">
+                                    <input class="form-control" type="text" autocomplete="off" name="youtube" value="<?php echo(isset($youtube) ? $youtube :''); ?>">
 
                                     <?php if(isset($errors['youtube'])): ?>
                                     <p class="text-danger"><?php echo($errors['youtube']); ?></p>
@@ -300,7 +317,7 @@
                                 </div>
 
                                 <div class="col-xs-12" style="padding-left: 0px; margin-bottom: 15px;">
-                                    <button id="add-image" type="button" class="btn btn-info col-xs-6">Add Image</button>
+                                    <button id="add-image" type="button" class="button-margin-top btn btn-info col-xs-6">Add Image</button>
                                 </div>
 
                                 <div class="form-group">
@@ -321,10 +338,13 @@
 
 <script>
         $(document).ready(function() {
-            $('.js-example-basic-multiple').select2({multiple: true, placeholder: "Please select value"});
-            $('.js-example-basic-hide-search-multi').on('select2:opening select2:closing', function( event ) {
-                var $searchfield = $(this).parent().find('.select2-search__field');
-                $searchfield.prop('disabled', true);});
+            $('.js-example-basic-multiple').select2({
+                multiple: true, 
+                placeholder: "Please select value",
+                width: '100%'});  
+            // $('.js-example-basic-hide-search-multi').on('select2:opening select2:closing', function( event ) {
+            //     var $searchfield = $(this).parent().find('.select2-search__field');
+            //     $searchfield.prop('disabled', true);});
 
             let currentImageIndex = 2;
             let maxIndex = 6;
@@ -378,7 +398,7 @@
                 let imgContainer = $(this).parent();
                 imgContainer.find(".img-img").attr('src', '').addClass("display-none");
                 $(this).parent().parent().removeClass("has-image");
-                imgContainer.find("input").val("");
+                $(this).parent().parent().find("input").val('');
                 // let currentImageName = $(this).attr('data-image-name');
                 // let shouldDeleteField = $(`[name='should_delete_${currentImageName}']`);
                 // shouldDeleteField.val('1');

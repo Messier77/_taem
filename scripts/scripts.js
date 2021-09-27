@@ -142,7 +142,7 @@ let myApp = {
       if (myApp.activeFilters.materials.includes(parseInt(material.id))) {
         let item = `
           <div class="added-filter">
-            <img onclick="myApp.toggleMaterial(${parseInt(material.id)})" src="../images/icons/close-filter.svg" alt="">
+            <img onclick="myApp.toggleMaterial(${parseInt(material.id)})" src="./images/icons/close-filter.svg" alt="">
             <p>${material.name}</p>
           </div>
         `;
@@ -155,7 +155,7 @@ let myApp = {
       if (myApp.activeFilters.categories.includes(parseInt(category.id))) {
         let item = `
           <div class="added-filter">
-            <img onclick="myApp.toggleCategory(${parseInt(category.id)})" src="../images/icons/close-filter.svg" alt="">
+            <img onclick="myApp.toggleCategory(${parseInt(category.id)})" src="./images/icons/close-filter.svg" alt="">
             <p>${category.name}</p>
           </div>
         `;
@@ -178,13 +178,13 @@ let myApp = {
     let res = "";
     myApp.productList.forEach(element => {
       let item = `
-              <a href="../project/project.php?product=${element.id}" class="all-projects">
+              <a href="./project.php?product=${element.id}" class="all-projects">
               <div class="project">
-                  <img src="../images/products/${element.featured_image}" alt="" class="project-img" />
+                  <img src="./images/${element.featured_image ? 'products/' + element.featured_image : 'contact/default.jpg'}" alt="" class="project-img" />
                   <div class="project-info">
                       <h4>${element.name}</h4>
                       <p>${element.short_description}</p>
-                      <img src="../images/icons/arrow.svg" alt="">
+                      <img src="./images/icons/arrow.svg" alt="">
                   </div>
               </div>
               </a>

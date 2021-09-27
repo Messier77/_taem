@@ -35,6 +35,22 @@
     <link href="css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.min.js"></script>
 
+    <!-- Sweetalert -->
+    <!-- <script src="./sweetalert2/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="./sweetalert2/dist/sweetalert2.min.css"> -->
+
+    <!-- Bootbox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
+
+    <!-- Bootstrap Data Table -->
+    <link href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap.min.js"></script>
+
+
+
+    <link href="css/custom-styles.css" rel="stylesheet">
+
 </head>
 
 <body>

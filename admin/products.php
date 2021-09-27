@@ -1,5 +1,15 @@
 <?php include "./includes/admin_header.php";?>
 
+<?php 
+
+session_start(); 
+
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+}
+
+?>
+
     <div id="wrapper">
 
     <?php include "./includes/admin_navigation.php";?>
@@ -7,6 +17,14 @@
         <div id="page-wrapper">
 
             <div class="container-fluid">
+
+                <?php if(!empty($_SESSION['success_message'])) : ?>
+
+                    <div class="alert alert-success" role="alert"><?php echo $_SESSION['success_message']; ?></div>
+
+                <?php endif; ?>
+                
+                <?php $_SESSION['success_message'] = null; ?>
 
                 <!-- Page Heading -->
                 <div class="row">

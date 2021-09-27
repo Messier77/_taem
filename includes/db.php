@@ -90,6 +90,42 @@ function deleteProduct($id) {
     $connection->close();
 }
 
+function deleteCategory($id) {
+    $connection = get_connection();
+
+    $query = "DELETE FROM categories WHERE id = $id";
+
+    if ($connection->query($query) === TRUE) {
+    } else {
+     pr("Error: " . $connection->error);
+    }
+    $connection->close();
+}
+
+function deleteMaterial($id) {
+    $connection = get_connection();
+
+    $query = "DELETE FROM materials WHERE id = $id";
+
+    if ($connection->query($query) === TRUE) {
+    } else {
+     pr("Error: " . $connection->error);
+    }
+    $connection->close();
+}
+
+function deleteMessage($id) {
+    $connection = get_connection();
+
+    $query = "DELETE FROM messages WHERE id = $id";
+
+    if ($connection->query($query) === TRUE) {
+    } else {
+     pr("Error: " . $connection->error);
+    }
+    $connection->close();
+}
+
 function deleteImages($id) {
     $connection = get_connection();
     $query = "DELETE FROM product_images WHERE product_id = $id";
@@ -113,7 +149,7 @@ function deleteSingleImage($id, $image) {
 function get_all_products() {
     $connection = get_connection();
 
-    $query = "select * FROM products";
+    $query = "SELECT * FROM products ORDER BY id DESC";
     $select_all_products_query = $connection->query($query);
     
     // $myArray = mysqli_fetch_all($select_all_products_query, MYSQLI_ASSOC);
@@ -149,6 +185,19 @@ function insert_product($name, $title, $description, $short_description, $produc
     $connection->close();
 }
 
+function insert_message($name, $email, $phone, $message) {
+    $connection = get_connection();
+
+    $query = "INSERT INTO messages (name, email, phone, message) 
+    VALUES ('$name', '$email', '$phone', '$message')";
+
+    if ($connection->query($query) === TRUE) {
+      } else {
+       pr("Error: " . $connection->error);
+      }
+    $connection->close();
+}
+
 function update_product($id, $name, $title, $description, $short_description, $product_categories, $product_materials, $featured_image = '', $is_featured, $youtube) {
     $connection = get_connection();
 
@@ -173,6 +222,45 @@ function updateProductImage($id, $image) {
     $connection->close();
 }
 
+function updateCategories($id, $name) {
+    $connection = get_connection();
+
+    $query = "UPDATE categories SET name = '$name' WHERE id = $id";
+
+    if ($connection->query($query) === TRUE) {
+        return json_encode(['status' => 'success']);
+      } else {
+       pr("Error: " . $connection->error);
+      }
+    $connection->close();
+}
+
+function updateMaterials($id, $name) {
+    $connection = get_connection();
+
+    $query = "UPDATE materials SET name = '$name' WHERE id = $id";
+
+    if ($connection->query($query) === TRUE) {
+        return json_encode(['status' => 'success']);
+      } else {
+       pr("Error: " . $connection->error);
+      }
+    $connection->close();
+}
+
+function updateMessages($id) {
+    $connection = get_connection();
+
+    $query = "UPDATE messages SET status = 'read' WHERE id = $id";
+
+    if ($connection->query($query) === TRUE) {
+        return json_encode(['status' => 'success']);
+      } else {
+       pr("Error: " . $connection->error);
+      }
+    $connection->close();
+}
+
 function insertProductImage($product_id, $image_name, $type) {
     $connection = get_connection();
 
@@ -185,14 +273,35 @@ function insertProductImage($product_id, $image_name, $type) {
     $connection->close();
 }
 
+function insertProductCategory($product_id, $category_id) {
+    $connection = get_connection();
+
+    $query = "INSERT INTO product_categories (product_id, category_id) VALUES ('$product_id', '$category_id')";
+
+    if ($connection->query($query) === TRUE) {
+      } else {
+       pr("Error: " . $connection->error);
+      }
+    $connection->close();
+}
+
+function checkProductCategories($category_id) {
+    $connection = get_connection();
+
+    $query = "select * FROM product_categories WHERE category_id = $category_id";
+    $select_all_images_query = $connection->query($query);
+
+    $myArray = $select_all_images_query->fetch_all(MYSQLI_ASSOC);
+    $connection->close();
+    return $myArray;    
+}
+
 function get_materials() {
     $connection = get_connection();
 
     $query = "SELECT * FROM materials";
-    // $select_all_products_query = mysqli_query($connection, $query);
     $select_all_materials_query = $connection->query($query);
     
-        // $myArray = mysqli_fetch_all($select_all_products_query, MYSQLI_ASSOC);
         $myArray = $select_all_materials_query->fetch_all(MYSQLI_ASSOC);
         $results = json_encode($myArray);
 
@@ -203,10 +312,8 @@ function get_categories() {
     $connection = get_connection();
 
     $query = "SELECT * FROM categories";
-    // $select_all_products_query = mysqli_query($connection, $query);
     $select_all_categories_query = $connection->query($query);
     
-        // $myArray = mysqli_fetch_all($select_all_products_query, MYSQLI_ASSOC);
         $myArray = $select_all_categories_query->fetch_all(MYSQLI_ASSOC);
         $results = json_encode($myArray);
 
@@ -220,11 +327,15 @@ function getCurrentProduct($id) {
     $query = "select * FROM products WHERE id = $id";
     $select_all_products_query = $connection->query($query);
     
-    // $myArray = mysqli_fetch_all($select_all_products_query, MYSQLI_ASSOC);
     $myArray = $select_all_products_query->fetch_all(MYSQLI_ASSOC);
-    // $results = json_encode($myArray);
     $connection->close();
-    return $myArray[0];    
+
+    if(count($myArray) > 0) {
+        return $myArray[0];
+    } else {
+        return null;
+    }
+        
 } 
 
 ?>

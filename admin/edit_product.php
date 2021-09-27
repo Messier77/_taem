@@ -1,6 +1,12 @@
 <?php include "./includes/admin_header.php";?>
 <?php
 
+session_start();
+
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+}
+
         $query = "SELECT * FROM categories";
         $select_all_categories_query = mysqli_query($connection, $query);
         $categories = mysqli_fetch_all($select_all_categories_query, MYSQLI_ASSOC);
@@ -12,6 +18,10 @@
         $errors = [];
 
         $currentProduct = getCurrentProduct($_GET['id']);
+
+        if(!isset($currentProduct)) {
+            header("Location: products");
+        }
 
         $id = $_GET['id'];
 
@@ -58,7 +68,7 @@
             $fileNameForConcat = strlen($fileNameCmps[0]) > 30 ? substr($fileNameCmps[0],0,30) : $fileNameCmps[0];
 
             // sanitize file-name
-            $newFileName = md5(time() . $fileName) . '-' . $fileNameForConcat . '.' . $fileExtension;
+            $newFileName = md5(microtime() . $fileName) . '-' . $fileNameForConcat . '.' . $fileExtension;
             // check if file has one of the following extensions
             $allowedfileExtensions = array('jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
 
@@ -156,32 +166,38 @@
                     unlink("../images/products/" . $main_image);
                     // deleteSingleImage($_GET['id'], $main_image);
                     updateProductImage($main_image_id, $image);
+                    $main_image = $image;
                 } else {
                     insertProductImage($_GET['id'], $image, 1);
+                    $main_image = $image;
                 }
                 
             }
             for($i = 1; $i < 7; $i++) {
-                if ($_POST['should_delete_other_image_' . $i] == 1) {
+                if (isset($_POST['should_delete_other_image_' . $i]) && $_POST['should_delete_other_image_' . $i] == 1) {
                     unlink("../images/products/" . $product_images[$i - 1]['image']);
                     deleteSingleImage($_GET['id'], $product_images[$i - 1]['image']);
                 }
 
-                if($_FILES['other_image_' . $i]['name'] != '' && $_POST['should_delete_other_image_' . $i] == 0) {
+                if(isset($_FILES['other_image_' . $i]['name']) && $_FILES['other_image_' . $i]['name'] != '' && $_POST['should_delete_other_image_' . $i] == 0) {
                     $image = uploadImageAndGetPath($_FILES['other_image_' . $i]);
                     if($image != null){
 
                         if(count($product_images) > $i) {
                             updateProductImage($product_images[$i - 1]['id'], $image);
+                            // $product_images[$i - 1]['image'] = $image;
                             
                         } else {
                             insertProductImage($_GET['id'], $image, 0);
+                            // $product_images[$i - 1]['image'] = $image;
                         }   
                     }
                 }  
             }
-            header("Location: edit_product.php?id=" . $_GET['id']);
-            $success_message = "It worked";
+            
+            header("Location: edit_product?id=" . $_GET['id']); 
+            $_SESSION['success_update'] = 'Product successfully updated';
+
         } 
     }
 ?>
@@ -206,14 +222,19 @@
                         <!-- Add product form -->
                         <div class="col-sm-6">
 
-                            <?php if(isset($success_message)) : ?>
-                                <div class="alert alert-success" role="alert">Product successfully updated</div>
-                            <?php endif; ?>
+                        <?php if(!empty($_SESSION['success_update'])) : ?>
+
+                            <div class="alert alert-success" role="alert"><?php echo $_SESSION['success_update']; ?></div>
+
+                        <?php endif; ?>
+
+                        <?php $_SESSION['success_update'] = null; ?>
+
 
                             <form action="" method="post" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label for="product_name">Product name</label>
-                                    <input class="form-control" type="text" name="product_name" value="<?php echo(isset($product_name) ? $product_name :''); ?>">
+                                    <input class="form-control" type="text" autocomplete="off" name="product_name" value="<?php echo(isset($product_name) ? $product_name :''); ?>">
 
                                     <?php if(isset($errors['product_name'])): ?>
                                     <p class="text-danger"><?php echo($errors['product_name']); ?></p>
@@ -222,7 +243,7 @@
 
                                 <div class="form-group">
                                     <label for="product_title">Product title</label>
-                                    <input class="form-control" type="text" name="product_title" value="<?php echo(isset($product_title) ? $product_title :''); ?>">
+                                    <input class="form-control" type="text" autocomplete="off" name="product_title" value="<?php echo(isset($product_title) ? $product_title :''); ?>">
 
                                     <?php if(isset($errors['product_title'])): ?>
                                     <p class="text-danger"><?php echo($errors['product_title']); ?></p>
@@ -231,7 +252,7 @@
 
                                 <div class="form-group">
                                     <label for="product_description">Product description</label>
-                                    <textarea style="resize:none" rows=10 class="form-control" type="text" name="product_description"><?php echo(isset($product_description) ? $product_description :''); ?></textarea>
+                                    <textarea style="resize:none" rows=10 class="form-control" type="text" autocomplete="off" name="product_description"><?php echo(isset($product_description) ? $product_description :''); ?></textarea>
 
                                     <?php if(isset($errors['product_description'])): ?>
                                     <p class="text-danger"><?php echo($errors['product_description']); ?></p>
@@ -240,7 +261,7 @@
 
                                 <div class="form-group">
                                     <label for="product_short_description">Product short description</label>
-                                    <input class="form-control" type="text" name="product_short_description" value="<?php echo(isset($product_short_description) ? $product_short_description :''); ?>">
+                                    <input class="form-control" type="text" autocomplete="off" name="product_short_description" value="<?php echo(isset($product_short_description) ? $product_short_description :''); ?>">
 
                                     <?php if(isset($errors['product_short_description'])): ?>
                                     <p class="text-danger"><?php echo($errors['product_short_description']); ?></p>
@@ -300,7 +321,6 @@
                                                 <div class="img-text">No file chosen, yet!</div>
                                             </div>
                                             <div class="cancel-btn" data-image-name="featured_image"><i class="fas fa-times"></i></div>
-                                            <div class="file-name"></div>
                                         </div>
                                         <input id="featured_image" type="file" name="featured_image" class="default-btn">
                                         <label for="featured_image" id="custom-btn" class="custom-btn">FEATURED IMAGE</label>
@@ -320,7 +340,6 @@
                                                 <div class="img-text">No file chosen, yet!</div>
                                             </div>
                                             <div class="cancel-btn" data-image-name="main_image"><i class="fas fa-times"></i></div>
-                                            <div class="file-name"></div>
                                         </div>
                                         <input id="main_image" type="file" name="main_image" class="default-btn">
                                         <label for="main_image" id="custom-btn" class="custom-btn">MAIN IMAGE</label>
@@ -346,7 +365,6 @@
                                                         <div class="img-text">No file chosen, yet!</div>
                                                     </div>
                                                     <div id="cancel-btn" data-image-name="other_image_<?php echo $idx; ?>" class="cancel-btn"><i class="fas fa-times"></i></div>
-                                                    <div class="file-name"></div>
                                                 </div>
                                                 <input id="other_image_<?php echo $idx; ?>" type="file" name="other_image_<?php echo $idx; ?>" class="default-btn">
                                                 <label for="other_image_<?php echo $idx; ?>" id="custom-btn" class="custom-btn">Picture <?php echo $idx; ?></label>
@@ -358,7 +376,7 @@
                                 </div>    
 
                                 <div class="col-xs-12" style="padding-left: 0px; margin-bottom: 15px;">
-                                    <button id="add-image" type="button" class="btn btn-info col-xs-6">Add Image</button>
+                                    <button id="add-image" type="button" class="button-margin-top btn btn-info col-xs-6">Add Image</button>
                                 </div>
 
                                 <div class="form-group">
@@ -379,10 +397,13 @@
 
 <script>
         $(document).ready(function() {
-            $('.js-example-basic-multiple').select2({multiple: true, placeholder: "Please select value"});
-            $('.js-example-basic-hide-search-multi').on('select2:opening select2:closing', function( event ) {
-                var $searchfield = $(this).parent().find('.select2-search__field');
-                $searchfield.prop('disabled', true);});
+            $('.js-example-basic-multiple').select2({
+                multiple: true, 
+                placeholder: "Please select value",
+                width: '100%'});  
+            // $('.js-example-basic-hide-search-multi').on('select2:opening select2:closing', function( event ) {
+            //     var $searchfield = $(this).parent().find('.select2-search__field');
+            //     $searchfield.prop('disabled', true);});
 
             let currentImageIndex = <?php echo count($images) + 1; ?>;
             let maxIndex = 6;
@@ -446,6 +467,7 @@
                 let imgContainer = $(this).parent();
                 imgContainer.find(".img-img").attr('src', '').addClass("display-none");
                 $(this).parent().parent().removeClass("has-image");
+                $(this).parent().parent().find("input").val('');
                 let currentImageName = $(this).attr('data-image-name');
                 let shouldDeleteField = $(`[name='should_delete_${currentImageName}']`);
                 shouldDeleteField.val('1');
