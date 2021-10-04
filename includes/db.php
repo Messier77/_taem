@@ -172,15 +172,17 @@ function get_featured_products() {
     return $results;    
 }
 
-function insert_product($name, $title, $description, $short_description, $product_categories, $product_materials, $featured_image = '', $is_featured = 0, $youtube) {
+function insert_product($name, $title, $description, $short_description, $product_categories, $product_materials, $featured_image = '', $is_featured = 0, $youtube, $slug) {
     $connection = get_connection();
 
-    $query = "INSERT INTO products (name, title, description, short_description, active, featured_image, product_categories, product_materials, is_featured, youtube) 
-    VALUES ('$name', '$title', '$description', '$short_description', 1, '$featured_image', '$product_categories', '$product_materials', '$is_featured', '$youtube')";
+    $query = "INSERT INTO products (name, title, description, short_description, active, featured_image, product_categories, product_materials, is_featured, youtube, slug) 
+    VALUES ('$name', '$title', '$description', '$short_description', 1, '$featured_image', '$product_categories', '$product_materials', '$is_featured', '$youtube', '$slug')";
 
     if ($connection->query($query) === TRUE) {
+        $connection->close();
+        return true;
       } else {
-       pr("Error: " . $connection->error);
+        return $connection->error;
       }
     $connection->close();
 }
@@ -198,14 +200,16 @@ function insert_message($name, $email, $phone, $message) {
     $connection->close();
 }
 
-function update_product($id, $name, $title, $description, $short_description, $product_categories, $product_materials, $featured_image = '', $is_featured, $youtube) {
+function update_product($id, $name, $title, $description, $short_description, $product_categories, $product_materials, $featured_image = '', $is_featured, $youtube, $slug) {
     $connection = get_connection();
 
-    $query = "UPDATE products SET name = '$name', title = '$title', description = '$description', short_description = '$short_description', product_categories = '$product_categories', product_materials = '$product_materials', featured_image = '$featured_image', is_featured = '$is_featured', youtube = '$youtube' WHERE id = $id";
+    $query = "UPDATE products SET name = '$name', title = '$title', description = '$description', short_description = '$short_description', product_categories = '$product_categories', product_materials = '$product_materials', featured_image = '$featured_image', is_featured = '$is_featured', youtube = '$youtube' , slug = '$slug' WHERE id = $id";
 
     if ($connection->query($query) === TRUE) {
+        $connection->close();
+        return true;
       } else {
-       pr("Error: " . $connection->error);
+        return $connection->error;
       }
     $connection->close();
 }
@@ -273,29 +277,6 @@ function insertProductImage($product_id, $image_name, $type) {
     $connection->close();
 }
 
-function insertProductCategory($product_id, $category_id) {
-    $connection = get_connection();
-
-    $query = "INSERT INTO product_categories (product_id, category_id) VALUES ('$product_id', '$category_id')";
-
-    if ($connection->query($query) === TRUE) {
-      } else {
-       pr("Error: " . $connection->error);
-      }
-    $connection->close();
-}
-
-function checkProductCategories($category_id) {
-    $connection = get_connection();
-
-    $query = "select * FROM product_categories WHERE category_id = $category_id";
-    $select_all_images_query = $connection->query($query);
-
-    $myArray = $select_all_images_query->fetch_all(MYSQLI_ASSOC);
-    $connection->close();
-    return $myArray;    
-}
-
 function get_materials() {
     $connection = get_connection();
 
@@ -334,8 +315,53 @@ function getCurrentProduct($id) {
         return $myArray[0];
     } else {
         return null;
-    }
-        
+    }       
 } 
+
+function getProductBySlug($slug) {
+    $connection = get_connection();
+
+    $query = "select * FROM products WHERE slug = '$slug'";
+    $select_all_products_query = $connection->query($query);
+    
+    if($select_all_products_query) {
+        $myArray = $select_all_products_query->fetch_all(MYSQLI_ASSOC);
+    }
+
+    $connection->close();
+
+    if(isset($myArray) && count($myArray) > 0) {
+        return $myArray[0];
+    } else {
+        return null;
+    }       
+} 
+
+function slugify($text, string $divider = '-')
+{
+  // replace non letter or digits by divider
+  $text = preg_replace('~[^\pL\d]+~u', $divider, $text);
+
+  // transliterate
+  $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+
+  // remove unwanted characters
+  $text = preg_replace('~[^-\w]+~', '', $text);
+
+  // trim
+  $text = trim($text, $divider);
+
+  // remove duplicate divider
+  $text = preg_replace('~-+~', $divider, $text);
+
+  // lowercase
+  $text = strtolower($text);
+
+  if (empty($text)) {
+    return 'n-a';
+  }
+
+  return $text;
+}
 
 ?>

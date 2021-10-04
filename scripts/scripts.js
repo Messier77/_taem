@@ -1,22 +1,50 @@
+const body = document.querySelector("body");
 const nav = document.querySelector(".mobile-nav");
-const burger = document.querySelector(".burger-toggle");
+const mainNav = document.querySelector("nav");
+const burger = document.querySelector(".burger-image");
+const logo = document.querySelector(".logo");
 const links = nav.querySelectorAll("a");
 const burgerClose = document.getElementById("burger-close");
+const textarea = document.querySelector(".textarea");
+
+function auto_grow(element) {
+  element.style.height = "5px";
+  element.style.height = (element.scrollHeight + 8)+"px";
+  textarea.style.height = "5px";
+  textarea.style.height = (element.scrollHeight + 2)+"px";
+}
+
+function toggleImg() {
+  const initialImg = document.querySelector(".burger-image").src;
+  const srcTest = initialImg.includes("burger-menu.svg");
+  let newImg = {
+    'true':'./images/icons/burger-menu-close.svg', 
+    'false':'./images/icons/burger-menu.svg'}[srcTest];
+
+  return newImg;
+}
 
 burger.addEventListener("click", () => {
-  nav.classList.toggle("inactive-menu");
-  // burger.style.display = "none";
-  // burgerClose.style.display = "block";
+  nav.classList.toggle("mobile-nav-active");
+  body.classList.toggle("disable-scroll");
+  burger.src = toggleImg();
 });
 
 links.forEach(link => {
   link.addEventListener('click', () => {
-    nav.classList.toggle("inactive-menu");
-    // burger.style.display = "block";
-    // burgerClose.style.display = "none";
-    // burgerImg.src = "./images/icons/burger-menu.svg";
+    nav.classList.toggle("mobile-nav-active");
+    body.classList.toggle("disable-scroll");
   })
 });
+
+window.onscroll = function() {scrollFunction()};
+function scrollFunction() {
+  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    mainNav.classList.add("scroll-nav");
+  } else {
+    mainNav.classList.remove("scroll-nav");
+  }
+}
 
 let myApp = {
   productListFull: [],
@@ -44,7 +72,7 @@ let myApp = {
     myApp.printProducts();
     myApp.printMaterials();
     myApp.printCategories();
-    myApp.printResultsNr();
+    // myApp.printResultsNr();
   },
   setFilters: function (products, categories, materials) {
 
@@ -131,24 +159,11 @@ let myApp = {
     myApp.printMaterials();
 
     myApp.printAddedFilters();
-    myApp.printResultsNr();
+    // myApp.printResultsNr();
   },
 
   printAddedFilters: function () {
     let res = "";
-
-    myApp.filters.materials.forEach(material => {
-
-      if (myApp.activeFilters.materials.includes(parseInt(material.id))) {
-        let item = `
-          <div class="added-filter">
-            <img onclick="myApp.toggleMaterial(${parseInt(material.id)})" src="./images/icons/close-filter.svg" alt="">
-            <p>${material.name}</p>
-          </div>
-        `;
-        res += item;
-      }
-    });
 
     myApp.filters.categories.forEach(category => {
 
@@ -157,6 +172,19 @@ let myApp = {
           <div class="added-filter">
             <img onclick="myApp.toggleCategory(${parseInt(category.id)})" src="./images/icons/close-filter.svg" alt="">
             <p>${category.name}</p>
+          </div>
+        `;
+        res += item;
+      }
+    });
+
+    myApp.filters.materials.forEach(material => {
+
+      if (myApp.activeFilters.materials.includes(parseInt(material.id))) {
+        let item = `
+          <div class="added-filter">
+            <img onclick="myApp.toggleMaterial(${parseInt(material.id)})" src="./images/icons/close-filter.svg" alt="">
+            <p>${material.name}</p>
           </div>
         `;
         res += item;
@@ -178,7 +206,7 @@ let myApp = {
     let res = "";
     myApp.productList.forEach(element => {
       let item = `
-              <a href="./project.php?product=${element.id}" class="all-projects">
+              <a href="./project.php?product=${element.slug}" class="all-projects">
               <div class="project">
                   <img src="./images/${element.featured_image ? 'products/' + element.featured_image : 'contact/default.jpg'}" alt="" class="project-img" />
                   <div class="project-info">

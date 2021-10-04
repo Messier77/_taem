@@ -243,6 +243,7 @@ body {
 
 .action-buttons {
     width: 160px;
+    min-width: 160px;
 
 }
 .action-buttons-messages {
@@ -255,4 +256,28 @@ body {
 
 .read{
     background: none;
+}
+
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+    background-color: #cba25f;
+    border-color: #cba25f;
+}
+
+.pagination > li > a, .pagination > li > span {
+    color: #000000;
+    background-color: #ffffff;
+    border: 1px solid #cba25f;
+
+    &:hover {
+        color: #000000;
+    }
+}
+
+.pagination > .disabled > a, .pagination > .disabled > a:focus, .pagination > .disabled > a:hover, .pagination > .disabled > span, .pagination > .disabled > span:focus, .pagination > .disabled > span:hover {
+    color: #777;
+    border-color: #cba25f;
+}
+
+.notification-message{
+    color: #cba25f;
 }

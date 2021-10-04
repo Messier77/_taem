@@ -4,19 +4,16 @@
     if (isset($_GET['product'])) {
         $id = $_GET['product'];
 
-        if (!is_numeric($id)) {
-            return false;
-        }
+        $product = getProductBySlug($id);
 
-        $images = getProductImages($id);
-        $mainImage = getMainImages($id);
+        $images = isset($product) ? getProductImages($product['id']) : [];
+        $mainImage = isset($product) ? getMainImages($product['id']) : [];
         $main_image = '';
 
         if(count($mainImage) > 0) {
             $main_image = $mainImage[0]['image'];
         }
 
-        $product = getCurrentProduct($id);
     }
 
 ?>
@@ -50,9 +47,10 @@
         </div>
 
         <!-- Logo -->
-        <div class="logo">
-            <a href="./"><img src="./images/icons/Logo-and-bg.svg" alt=""></a>
+        <a href="./"><div class="logo">
         </div>
+        <div class="logo2">
+        </div></a>
 
         <!-- Navigation menu -->
         <div class="nav-menu">
@@ -60,12 +58,11 @@
                 <li><a href="./work.php">Work</a></li>
                 <li><a href="https://www.youtube.com/c/TrialandErrorMakers" target="_blank">YouTube Channel</a></li>
                 <li><a href="./contact.php">Meet us</a></li>
-                <li class="header-icon-mobile burger-toggle"><img src="./images/icons/burger-menu.svg" alt=""></li>
-                <li class="header-icon-mobile burger-toggle" id="burger-close"><img src="./images/icons/burger-menu-close.svg" alt=""></li>
+                <li class="header-icon-mobile"><img class="burger-image" src="./images/icons/burger-menu.svg" alt=""></li>
             </ul>
         </div>
     </nav>
-    <div class="mobile-nav inactive-menu">
+    <div class="mobile-nav">
         <ul>
             <li><a href="./work.php">Work</a></li>
             <li><a href="https://www.youtube.com/c/TrialandErrorMakers" target="_blank">YouTube Channel</a></li>
@@ -96,9 +93,11 @@
                 <p><?php echo isset($product['description']) ? $product['description'] : ''; ?></p>
             </div>
 
-            <?php foreach($images as $key => $image ): ?>
-                <img src="./images/products/<?php echo $image['image']; ?>" alt="" class="project-image">
-            <?php endforeach; ?>
+            <?php if(isset($images)) : ?>
+                <?php foreach($images as $key => $image ): ?>
+                    <img src="./images/products/<?php echo $image['image']; ?>" alt="" class="project-image">
+                <?php endforeach; ?>
+            <?php endif; ?>
     
             <?php if(!empty($product['youtube'])) : ?>
             <div class="video">
@@ -147,6 +146,7 @@
 
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="./scripts/scripts.js"></script>
     
 </body>

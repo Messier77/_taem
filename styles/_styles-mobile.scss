@@ -22,6 +22,7 @@
     width: 90%;
     margin: auto;
     padding-bottom: 90px;
+    padding-top: 150px;
 
     h1 {
         width: 90%;
@@ -64,11 +65,17 @@
 
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1080px) {
 
 nav {
-    width: 90%;
 
+    min-height: 150px;
+    
+    .logo {
+        width: 150px;
+        height: 150px;
+    }
+    
     .nav-menu {
         ul {
             li {
@@ -82,12 +89,13 @@ nav {
 
 }
 
-@media (max-width: 777px) {
+@media (max-width: 860px) {
 
 .projects {
     width: 90%;
     margin: auto;
     padding-bottom: 1em;
+    padding-top: 100px;
 
     .projects-center {
         position: relative;
@@ -114,13 +122,40 @@ nav {
 }
 
 nav {
+    min-height: 100px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: sticky;
+    position: fixed;
+    width: 100%;
     background: #ffffff;
     top: 0;
-    z-index: 1;
+    z-index: 99;
+
+    .logo {
+        background-size: contain;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        transition: filter 0.5s ease;
+        width: 100px;
+        height: 100px;
+        min-width: 100px;
+        min-height: 100px;
+    }
+
+    .logo2 {
+        background-size: contain;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        transition: filter 0.5s ease;
+        top: 25px;
+        width: 60px;
+        height: 50px;
+        min-width: 60px;
+        min-height: 50px;
+    }
     
     .social-header {
 
@@ -132,6 +167,7 @@ nav {
 
             .header-icon-mobile {
                 display: block;
+                cursor: pointer;
 
                 img {
                     height: 100%;
@@ -155,6 +191,7 @@ nav {
 
             .header-icon-mobile {
                 display: block;
+                cursor: pointer;
 
                 a {
                     &:hover {

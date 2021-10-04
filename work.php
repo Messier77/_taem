@@ -26,9 +26,10 @@
         </div>
 
         <!-- Logo -->
-        <div class="logo">
-            <a href="./"><img src="./images/icons/Logo-and-bg.svg" alt=""></a>
+        <a href="./"><div class="logo">
         </div>
+        <div class="logo2">
+        </div></a>
 
         <!-- Navigation menu -->
         <div class="nav-menu">
@@ -36,12 +37,11 @@
                 <li><a href="./work.php" class="menu-active">Work</a></li>
                 <li><a href="https://www.youtube.com/c/TrialandErrorMakers" target="_blank">YouTube Channel</a></li>
                 <li><a href="./contact.php">Meet us</a></li>
-                <li class="header-icon-mobile burger-toggle"><img src="./images/icons/burger-menu.svg" alt=""></li>
-                <li class="header-icon-mobile burger-toggle" id="burger-close"><img src="./images/icons/burger-menu-close.svg" alt=""></li>
+                <li class="header-icon-mobile"><img class="burger-image" src="./images/icons/burger-menu.svg" alt=""></li>
             </ul>
         </div>
     </nav>
-    <div class="mobile-nav inactive-menu">
+    <div class="mobile-nav">
         <ul>
             <li><a href="./work.php">Work</a></li>
             <li><a href="https://www.youtube.com/c/TrialandErrorMakers" target="_blank">YouTube Channel</a></li>
@@ -82,7 +82,7 @@
         <div class="line"></div>
 
 
-        <div class="added-filters" id="results">
+        <!-- <div class="added-filters" id="results"> -->
 
         </div>
 
@@ -115,7 +115,7 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="./scripts/scripts.js"></script>
 
     <?php 

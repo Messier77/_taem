@@ -26,10 +26,14 @@
 }
 
 nav {
-  position: relative;
-  width: 85%;
-  height: 10vw;
-  min-height: 100px;
+  position: fixed;
+  top: 0;
+  background-color: white;
+  width: 100%;
+  padding-left: 8%;
+  padding-right: 8%;
+  min-height: 200px;
+  z-index: 99;
   margin: auto;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -40,6 +44,34 @@ nav {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  -webkit-transition: 0.2s ease-in-out all;
+  transition: 0.2s ease-in-out all;
+}
+
+nav .logo {
+  opacity: 1;
+  -webkit-transition: 0.1s ease-in-out all;
+  transition: 0.1s ease-in-out all;
+}
+
+nav .logo2 {
+  opacity: 0;
+  -webkit-transition: 0.1s ease-in-out all;
+  transition: 0.1s ease-in-out all;
+}
+
+nav.scroll-nav {
+  -webkit-box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.5);
+          box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.5);
+  min-height: 100px;
+}
+
+nav.scroll-nav .logo {
+  opacity: 0;
+}
+
+nav.scroll-nav .logo2 {
+  opacity: 1;
 }
 
 nav .social-header ul {
@@ -138,32 +170,34 @@ nav .logo {
   left: 50%;
   -webkit-transform: translateX(-50%);
           transform: translateX(-50%);
-  -webkit-transition: -webkit-filter 0.5s ease;
-  transition: -webkit-filter 0.5s ease;
-  transition: filter 0.5s ease;
-  transition: filter 0.5s ease, -webkit-filter 0.5s ease;
-  width: 10vw;
-  height: 10vw;
-  min-width: 100px;
-  min-height: 100px;
+  width: 200px;
+  height: 200px;
+  background-image: url(../images/icons/Logo-and-bg.svg);
+  background-size: contain;
 }
 
-nav .logo img {
-  width: 100%;
-  height: 100%;
+nav .logo2 {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  height: 66px;
+  width: 92px;
+  background-image: url(../images/icons/Logo-simbol-black.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
 .mobile-nav {
   background: #FFFFFF;
-  position: -webkit-sticky;
-  position: sticky;
+  position: fixed;
   top: 100px;
   left: 0;
   height: calc(100vh - 100px);
   width: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
+  display: none;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
@@ -234,8 +268,15 @@ nav .logo img {
   margin-bottom: 30px;
 }
 
-.inactive-menu {
-  display: none;
+.mobile-nav-active {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.disable-scroll {
+  max-height: 100vh;
+  overflow: hidden;
 }
 
 #burger-close {
@@ -246,6 +287,7 @@ nav .logo img {
   width: 85%;
   margin: auto;
   margin-bottom: 90px;
+  margin-top: 250px;
 }
 
 .projects h1 {
@@ -365,6 +407,7 @@ nav .logo img {
     width: 90%;
     margin: auto;
     padding-bottom: 90px;
+    padding-top: 150px;
   }
   .projects h1 {
     width: 90%;
@@ -397,20 +440,25 @@ nav .logo img {
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1080px) {
   nav {
-    width: 90%;
+    min-height: 150px;
+  }
+  nav .logo {
+    width: 150px;
+    height: 150px;
   }
   nav .nav-menu ul li a {
     font-size: 1em;
   }
 }
 
-@media (max-width: 777px) {
+@media (max-width: 860px) {
   .projects {
     width: 90%;
     margin: auto;
     padding-bottom: 1em;
+    padding-top: 100px;
   }
   .projects .projects-center {
     position: relative;
@@ -434,6 +482,7 @@ nav .logo img {
     margin: 2em auto;
   }
   nav {
+    min-height: 100px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -443,17 +492,49 @@ nav .logo img {
     -webkit-box-align: center;
         -ms-flex-align: center;
             align-items: center;
-    position: -webkit-sticky;
-    position: sticky;
+    position: fixed;
+    width: 100%;
     background: #ffffff;
     top: 0;
-    z-index: 1;
+    z-index: 99;
+  }
+  nav .logo {
+    background-size: contain;
+    position: absolute;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+    -webkit-transition: -webkit-filter 0.5s ease;
+    transition: -webkit-filter 0.5s ease;
+    transition: filter 0.5s ease;
+    transition: filter 0.5s ease, -webkit-filter 0.5s ease;
+    width: 100px;
+    height: 100px;
+    min-width: 100px;
+    min-height: 100px;
+  }
+  nav .logo2 {
+    background-size: contain;
+    position: absolute;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+    -webkit-transition: -webkit-filter 0.5s ease;
+    transition: -webkit-filter 0.5s ease;
+    transition: filter 0.5s ease;
+    transition: filter 0.5s ease, -webkit-filter 0.5s ease;
+    top: 25px;
+    width: 60px;
+    height: 50px;
+    min-width: 60px;
+    min-height: 50px;
   }
   nav .social-header ul li {
     display: none;
   }
   nav .social-header ul .header-icon-mobile {
     display: block;
+    cursor: pointer;
   }
   nav .social-header ul .header-icon-mobile img {
     height: 100%;
@@ -469,6 +550,7 @@ nav .logo img {
   }
   nav .nav-menu ul .header-icon-mobile {
     display: block;
+    cursor: pointer;
   }
   nav .nav-menu ul .header-icon-mobile a:hover:before {
     visibility: hidden;
@@ -695,8 +777,7 @@ nav .logo img {
 }
 
 .added-filters .added-filter {
-  margin: 5px;
-  margin-right: 10px;
+  margin-right: 15px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1020,6 +1101,8 @@ nav .logo img {
 
 .contact-form .row100 .inputBox input,
 .contact-form .row100 .inputBox.textarea textarea {
+  resize: none;
+  overflow: auto;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -1059,12 +1142,11 @@ nav .logo img {
 .contact-form .row100 .inputBox.textarea {
   position: relative;
   width: 100%;
-  height: 3.5em;
+  min-height: 3.5em;
 }
 
 .contact-form .row100 .inputBox.textarea textarea {
-  max-height: 5.5em;
-  min-height: 1.5em;
+  min-height: 3.5em;
   max-width: 100%;
   min-width: 100%;
 }

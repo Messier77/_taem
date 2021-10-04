@@ -29,6 +29,7 @@ if (!isset($_SESSION['username'])) {
         $newFileName = '';
         $is_featured = 0;
         $youtube = '';
+        $slug = '';
         
 
     function uploadImageAndGetPath($image) {
@@ -49,7 +50,7 @@ if (!isset($_SESSION['username'])) {
             // sanitize file-name
             $newFileName = md5(microtime() . $fileName) . '-' . $fileNameForConcat . '.' . $fileExtension;
             // check if file has one of the following extensions
-            $allowedfileExtensions = array('jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
+            $allowedfileExtensions = array('jpg', 'gif', 'png');
 
             if (in_array($fileExtension, $allowedfileExtensions)) {
                 // directory in which the uploaded file will be moved
@@ -126,13 +127,12 @@ if (!isset($_SESSION['username'])) {
             $newFileName = uploadImageAndGetPath($_FILES['featured_image']);
         }
 
+        $slug = slugify($product_title);
         if(empty($errors)) {
-            insert_product($product_name, $product_title, $product_description, $product_short_description, $product_categories, $product_materials, $newFileName, $is_featured, $youtube);
-            $productId = json_decode(selectLastAddedProduct())[0]->id;
 
-            foreach ($_POST['category'] as $key => $category_id) {
-                insertProductCategory($productId, $category_id);
-            }
+            $res = insert_product($product_name, $product_title, $product_description, $product_short_description, $product_categories, $product_materials, $newFileName, $is_featured, $youtube, $slug);
+
+            $productId = json_decode(selectLastAddedProduct())[0]->id;
 
             if($_FILES['main_image']) {
                 $image = uploadImageAndGetPath($_FILES['main_image']);
@@ -146,11 +146,14 @@ if (!isset($_SESSION['username'])) {
                     }     
                 }  
             }
-            $success_message = "It worked";
 
-            $_SESSION['success_message'] = 'Product successfully added';
-            
-            header("Location: products");
+            if($res === true) {
+                $success_message = "It worked";
+                $_SESSION['success_message'] = 'Product <span class="notification-message"><b>' . $product_name . '</b></span> has been successfully added!';               
+                header("Location: products");
+            } else {
+                $error_message = $res;
+            }
         } 
     }
 ?>
@@ -176,6 +179,10 @@ if (!isset($_SESSION['username'])) {
 
                             <?php if(isset($success_message)) : ?>
                                 <div class="alert alert-success" role="alert">Product successfully added</div>
+                            <?php endif; ?>
+
+                            <?php if(isset($error_message)) : ?>
+                                <div class="alert alert-danger" role="alert">Product title must be unique!</div>
                             <?php endif; ?>
 
                             <form action="" method="post" enctype="multipart/form-data">
@@ -342,9 +349,6 @@ if (!isset($_SESSION['username'])) {
                 multiple: true, 
                 placeholder: "Please select value",
                 width: '100%'});  
-            // $('.js-example-basic-hide-search-multi').on('select2:opening select2:closing', function( event ) {
-            //     var $searchfield = $(this).parent().find('.select2-search__field');
-            //     $searchfield.prop('disabled', true);});
 
             let currentImageIndex = 2;
             let maxIndex = 6;
@@ -399,9 +403,6 @@ if (!isset($_SESSION['username'])) {
                 imgContainer.find(".img-img").attr('src', '').addClass("display-none");
                 $(this).parent().parent().removeClass("has-image");
                 $(this).parent().parent().find("input").val('');
-                // let currentImageName = $(this).attr('data-image-name');
-                // let shouldDeleteField = $(`[name='should_delete_${currentImageName}']`);
-                // shouldDeleteField.val('1');
             });
         });
 

@@ -63,9 +63,10 @@ if(isset($_POST['submit'])) {
         </div>
 
         <!-- Logo -->
-        <div class="logo">
-            <a href="./"><img src="./images/icons/Logo-and-bg.svg" alt=""></a>
+        <a href="./"><div class="logo">
         </div>
+        <div class="logo2">
+        </div></a>
 
         <!-- Navigation menu -->
         <div class="nav-menu">
@@ -73,12 +74,11 @@ if(isset($_POST['submit'])) {
                 <li><a href="./work.php">Work</a></li>
                 <li><a href="https://www.youtube.com/c/TrialandErrorMakers" target="_blank">YouTube Channel</a></li>
                 <li><a href="./contact.php" class="menu-active">Meet us</a></li>
-                <li class="header-icon-mobile burger-toggle"><img src="./images/icons/burger-menu.svg" alt=""></li>
-                <li class="header-icon-mobile burger-toggle" id="burger-close"><img src="./images/icons/burger-menu-close.svg" alt=""></li>
+                <li class="header-icon-mobile"><img class="burger-image" src="./images/icons/burger-menu.svg" alt=""></li>
             </ul>
         </div>
     </nav>
-    <div class="mobile-nav inactive-menu">
+    <div class="mobile-nav">
         <ul>
             <li><a href="./work.php">Work</a></li>
             <li><a href="https://www.youtube.com/c/TrialandErrorMakers" target="_blank">YouTube Channel</a></li>
@@ -174,7 +174,7 @@ if(isset($_POST['submit'])) {
                     </div>
                     <div class="col">
                         <div class="inputBox">
-                            <input type="text" name="phone" autocomplete="off">
+                            <input type="text" name="phone" required="required" autocomplete="off">
                             <span class="text">Phone number</span>
                         </div>
                     </div>
@@ -182,7 +182,7 @@ if(isset($_POST['submit'])) {
                 <div class="row100">
                     <div class="col textarea-col">
                         <div class="inputBox textarea">
-                            <textarea required="required" id="textarea-resize" name="message" autocomplete="off"></textarea>
+                            <textarea required="required" id="textarea-resize" name="message" autocomplete="off" oninput="auto_grow(this)"></textarea>
                             <span class="text">Message</span>
                             <span class="line"></span>
                         </div>
@@ -218,6 +218,7 @@ if(isset($_POST['submit'])) {
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="./scripts/scripts.js"></script>
 </body>
 

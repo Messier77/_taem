@@ -9,8 +9,7 @@
                 <th>Material</th>
                 <th>Photo</th>
                 <th>Featured</th>
-                <th>Edit</th>
-                <th>Delete</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -88,8 +87,9 @@
             echo "<td>$material_id</td>";
             echo "<td><img style='width: 100%; max-width: 100px' src='../images/products/$featured_image' alt=''></td>";
             echo "<td>$is_featured</td>";
-            echo "<td><a class='btn btn-secondary' href='./edit_product?id={$id}'>Edit</a></td>";
-            echo "<td><a class='btn btn-danger delete-btn' id='delete-btn-{$id}' data-id='{$id}' data-name='{$name}'>Delete</a></td>";
+            echo "<td class='action-buttons'><a href='./edit_product?id={$id}'>
+                <button class='btn btn-secondary'>Edit</button></a>
+            <button class='btn btn-danger delete-btn' id='delete-btn-{$id}' data-id='{$id}' data-name='{$name}'>Delete</button></td>";
             echo "</tr>";
             }
         ?>
@@ -104,8 +104,7 @@
                 <th>Material</th>
                 <th>Photo</th>
                 <th>Featured</th>
-                <th>Edit</th>
-                <th>Delete</th>
+                <th>Actions</th>
             </tr>
         </tfoot>
     </table>

@@ -17,6 +17,10 @@ if (!isset($_SESSION['username'])) {
 
         $errors = [];
 
+        if(!is_numeric($_GET['id'])) {
+            header("Location: products");
+        }
+
         $currentProduct = getCurrentProduct($_GET['id']);
 
         if(!isset($currentProduct)) {
@@ -70,7 +74,7 @@ if (!isset($_SESSION['username'])) {
             // sanitize file-name
             $newFileName = md5(microtime() . $fileName) . '-' . $fileNameForConcat . '.' . $fileExtension;
             // check if file has one of the following extensions
-            $allowedfileExtensions = array('jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
+            $allowedfileExtensions = array('jpg', 'gif', 'png');
 
             if (in_array($fileExtension, $allowedfileExtensions)) {
                 // directory in which the uploaded file will be moved
@@ -151,8 +155,9 @@ if (!isset($_SESSION['username'])) {
             $product_image = uploadImageAndGetPath($_FILES['featured_image']);
         }
 
+        $slug = slugify($product_title);
         if(empty($errors)) {
-            update_product($currentProduct['id'], $product_name, $product_title, $product_description, $product_short_description, $product_categories, $product_materials, $product_image, $is_featured, $youtube);
+            $res = update_product($currentProduct['id'], $product_name, $product_title, $product_description, $product_short_description, $product_categories, $product_materials, $product_image, $is_featured, $youtube, $slug);
 
             if ($_POST['should_delete_main_image'] == 1) {
                 unlink("../images/products/" . $main_image);
@@ -194,9 +199,16 @@ if (!isset($_SESSION['username'])) {
                     }
                 }  
             }
+
+            if($res === true) {
+                $success_message = "It worked";
+                header("Location: products"); 
+                $_SESSION['success_message'] = 'Product <a href="edit_product?id=' . $id . '" class="notification-message"><b>' . $product_name . '</b></a> has been successfully updated!';
+            } else {
+                $error_message = $res;
+            }
             
-            header("Location: edit_product?id=" . $_GET['id']); 
-            $_SESSION['success_update'] = 'Product successfully updated';
+
 
         } 
     }
@@ -222,13 +234,17 @@ if (!isset($_SESSION['username'])) {
                         <!-- Add product form -->
                         <div class="col-sm-6">
 
-                        <?php if(!empty($_SESSION['success_update'])) : ?>
+                        <!-- <?php if(!empty($_SESSION['success_update'])) : ?>
 
                             <div class="alert alert-success" role="alert"><?php echo $_SESSION['success_update']; ?></div>
 
                         <?php endif; ?>
 
-                        <?php $_SESSION['success_update'] = null; ?>
+                        <?php $_SESSION['success_update'] = null; ?> -->
+
+                        <?php if(isset($error_message)) : ?>
+                            <div class="alert alert-danger" role="alert">Product title must be unique!</div>
+                        <?php endif; ?>
 
 
                             <form action="" method="post" enctype="multipart/form-data">
